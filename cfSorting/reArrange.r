@@ -5,7 +5,7 @@
 # in: Rscript reArrange.r
 # out: ../data/cf425MedMic.rda, ../data/{otherSp-qcREF,cf425Medic,cf425Micro}.csv
 # arg: 0
-# date: 20220315
+# date: 20220315,20220404
 
 ##### env #####
 cat("read reference data::",date(),"\n")
@@ -37,40 +37,26 @@ for(i in 1:nrow(qcREF)){
 	qcREF[i,a] = qcREF[i,a] + ifelse(i %in% nEg,-1,1)
 };rm(i,a)
 zZ = gsub("[$]","@",gsub("[(]","@",gsub("[)]","@",gsub("[+]","@",qcREF[,1]))))
-for(i in 1:length(zZ)){if(any(qcREF[i,-1]!=0)){
-	z9 = grep(zZ[i],zZ)
-	z9 = z9[which(z9!=i)]
-	if(sP$note[i]!=-1){z9 = z9[which(sP$note[z9]!=-1)]}else{z9 = z9[which(sP$note[z9]==-1)]} # only matching categories
-## extract entries of identical categories (minimise duplicated id)
-	z0 = z9[which(sP$QC.standardization[i]==sP$QC.standardization[z9])]
-## preserve entries with non-identical categories
-	z1 = setdiff(z9,z0)
-	iNclude = grep(sP$QC.standardization[i],sP$QC.standardization[z1])
-	if(length(iNclude)>0){z1 = z1[-iNclude]} # not mess up hybrids
-## eliminate regex text grep artifact
-	z2 = c(z0,z1)
-	if(length(z2)>0){ # textstring is a subset of other textstrings
-                for(i0 in 1:length(z2)){
-			if(z2[i0] %in% z0){tX="<-"}else{tX="XX"}
-                        cat(i,tX,z2[i0],":",zZ[i],tX,zZ[z2[i0]],"\n")
-			i2 = which(qcREF[i,]!=0); i2 = i2[i2!=1]
-			for(i3 in i2){
-				qcREF[z2[i0],i3] = max(-1, qcREF[z2[i0],i3]-abs(qcREF[i,i3]))
-}}}}};rm(i)
-## remove replaceable textstrings
-z0 = c();for(i in 1:nrow(qcREF)){if(sP$note[i]!=-1 & any(as.numeric(qcREF[i,-1])>0)==F){z0 = c(z0,i)}};rm(i)
-qcREF = qcREF[-z0,]
-## set text substrings to -1
-zZ0 = gsub("[$]","@",gsub("[(]","@",gsub("[)]","@",gsub("[+]","@",qcREF[,1]))))
-exHybrid = setdiff(zZ0,zZ[grep(";",sP$QC.standardization)])
-for(i in 1:nrow(qcREF)){if(zZ0[i] %in% exHybrid){
-	i0 = which(zZ0 %in% exHybrid[grep(zZ0[i],exHybrid)])
-	if(length(i0)>1){i0 = i0[i0!=i]
-		for(i1 in 1:length(i0)){
-			i2 = which(qcREF[i,]!=0); i2 = i2[i2!=1]
-			for(i3 in i2){
-				qcREF[i0[i1],i3] = max(-1, qcREF[i0[i1],i3]-abs(qcREF[i,i3]))
-}}}}}
+
+## set text substrings to -ve 20220404
+eLim=c();for(i in 1:nrow(qcREF)){if((i %in% eLim)==F){
+	qC = setdiff(grep(zZ[i],zZ),eLim);qC = qC[qC!=i]
+	if(length(qC)>0){ qC0 = which(qcREF[i,-1]!=0)#; cat(i,",")
+		for(i0 in qC){ qC1 = which(qcREF[i0,-1]!=0)
+			if(length(qC0)==length(qC1) && qC0==qC1){
+				eLim=c(eLim,i0)#; cat(i,",",i0,";")
+				if(length(grep(1252,eLim))>0){cat(i,",",i0,";");eLim = eLim[which(eLim!=1252)]}
+			}else{
+				qcREF[i0,qC0+1] = qcREF[i0,qC0+1]-1
+}}}}};rm(i,qC);cat("\n")
+qcREF = qcREF[-eLim,] # eliminate skippable textstring pattern
+
+## limit text pattern signal range into [-1,+1]
+x0 = colnames(qcREF)[1]
+qcREFt = qcREF[,-1]
+qcREFt[qcREFt<0] = -1
+qcREF = cbind(qcREF[,1],qcREFt)
+colnames(qcREF)[1] = x0;rm(x0,qcREFt)
 write.csv(qcREF,"../data/otherSp-qcREF.csv", quote=F, row.names=F)
 
 ##### map direct record ##### 20220324
