@@ -50,29 +50,8 @@ for(i in 2:length(yEar)){ #cat(yR[i],", ")
 	rEc = merge(rEc,x, all=T)
 }#;cat("\n");d0;date()
 
-##### patch "other species" record #####
-zZ = gsub("[|]+","@",gsub("[.*]"," ",gsub("[\n]","@",gsub("[;,] ","@",gsub("_x000d_","",gsub(" mar, jul, sept, nov 2019, jan 2020","",gsub("yeast[/,: ]","yeast@",gsub("yeasts[/,: ]","yeast@",gsub("yeasts and ","yeast@",gsub("yeasts &","yeast@",
-	c(rEc$cult_specify,rEc[,"s05culturespeciesresistotherspec"],rEc[,"s05culturespeciesfungalotherspec"],rEc[,"s05culturespeciesviralotherspeci"])
-	))))))))))
-zZ[which(zZ=="?")] = zZ[which(zZ==0)] = NA
-zZ = trimws(gsub("^[,?]|,$","",trimws(gsub("\\s+", " ", tolower(zZ)), which="both")), which="both")
-zZ = zZ[-grep("sputum",zZ)] # no extra info & machine-confuse symbols
-for(i in c("heavy ", "a moderate ", "scanty ", "light ", "")){zZ = gsub(paste0(i,"growth of "),"",zZ)}
-for(i in c(" [/]+ ","\n")){zZ = gsub(i,"@",zZ)}
-zZ = trimws(unique(zZ),which="both")
-zZ = gsub("\'","!!",zZ)
-for(i in grep("@",zZ)){zZ = c(zZ,as.character(read.table(text=zZ[i], sep="@")[1,]))}
-zZ = zZ[-grep("@",zZ)]
-zZ = gsub("!!","\'",unique(zZ))
-write.table(zZ[order(zZ)], "../data/otherSp.csv", sep=",", quote=F, row.names=F, col.names=F)
-
-#zZ0 = as.data.frame(table(zZ))
-#write.csv(zZ0[,c(2,1)], "../data/otherSp.csv", quote=F, row.names=F)
-#write.table(zZ0[,c(2,1)], "../data/otherSp-ExSep.csv", quote=F, row.names=F, sep="!")
-#rEc[,"s05culturespeciesresistotherspec"] = zZ
-
 ##### extract annual review patients & useful data attributes ##### 20220212
-dRop = c(13,15,17:22,25,33,43,seq(56,96,2),97:106,145,146,269,275,281,283,284,291,292,308:310,seq(318,324,2),328:330,334:339,366,369,373,376,377,381:394,402:409,411:414,416:453,seq(456,480,2),481:500,528:591,seq(598,616,2),617:619,seq(628,644,2),645:654)
+dRop = c(13,15,17:22,25,33,43,52,seq(56,96,2),97:106,145,146,269,275,281,283,284,291,292,296:303,308:310,seq(318,324,2),328:330,334:339,366,369,373,376,377,381:394,402:409,411:414,416:453,seq(456,480,2),481:500,528:591,seq(598,616,2),617:620,seq(628,644,2),645:654,675,680)
 regID = c();for(i in yEar){regID = unique(c(regID, cf425[[i]]$regid_anon))};rm(i)
 rEc = rEc[which(rEc$regid_anon %in% regID),-dRop]
 # Only patients with annual review presence in data + question multichoices are "tick" or "not ticked" = unticked entries == negative response instead of no info (i.e. 0 instead of NA)
@@ -88,25 +67,24 @@ dirRef = cbind(indRef[,1:2],dirRef)
 colnames(dirRef) = trimws(colnames(dirRef), which="both")
 
 ##### f: listing column details ##### 20220212
-dTl = function(x){
-        x0 = unique(rEc[,x])
-        cat(colnames(rEc)[x], ",", length(x0),",",class(rEc[,x]), "\n")
-        if(length(x0)<10){cat(x0, "\n");print(table(rEc[,x]))}}
+#dTl = function(x){
+#        x0 = unique(rEc[,x])
+#        cat(colnames(rEc)[x], ",", length(x0),",",class(rEc[,x]), "\n")
+#        if(length(x0)<10){cat(x0, "\n");print(table(rEc[,x]))}}
 #gWeird = function(x){return(grep(x, colnames(rEc0)))}
 #for(i in 3:ncol(rEc)){if(length(unique(rEc[,i]))>10){dTl(i)}};rm(i)
 
 ##### extract column (medicine + standard species) names ##### 20220227
-dEtails = which(colnames(rEc) %in% mUlti[c(3:12)])
-zZ = colnames(rEc)[-c(1,2,245:252,374,dEtails)]
-for(i in dEtails){zZ = c(zZ,unique(rEc[,i]))}
+dEtails = which(colnames(indRef) %in% mUlti[c(3:12)])
+zZ = c();for(i in dEtails){zZ = c(zZ,unique(indRef[,i]))}
 zZ = unique(zZ[-which(zZ=="0" | zZ=="nil" | zZ=="not taking")])
 zZ1 = setdiff(grep(", ",zZ), grep(")",zZ))
 zZ0 = read.table(text=zZ[zZ1], sep=",")
 zZ = zZ[-zZ1]
 for(i in 1:ncol(zZ0)){zZ = c(zZ, trimws(zZ0[,i], which="both"))}
 zZ = zZ[-grep("^[[:digit:]]",zZ)]
+zZ = c(zZ,colnames(dirRef)[-c(1,2)])
 zZ = unique(zZ)
-#zZ = unique(c(colnames(rEc)[-c(1,2,245:250,374,375)],sub("^ ","",read.table(text=zZ[-which(zZ=="0" | zZ=="nil")],sep=",")[,1])))
 write.table(c("input",zZ[order(zZ)]),"../data/genCols.csv", sep="\t",quote=F,row.names=F, col.names=F)
 
 save(rEc,yEar,yR,mUlti,dirRef,indRef, file="../data/cf425FULL.rda")
