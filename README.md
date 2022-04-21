@@ -18,3 +18,4 @@ searchAuto.py | tmp | {otherSp,genCols}-wiki.csv | text correction using mostly 
 (manual) | {otherSp,genCols}-wiki.csv | otherSp-qcList.csv, genCols-qcList.tsv | quality check automated search result; manual evaluation used [duckduckgo](https://duckduckgo.com/) search engine
 otherSpPlots.r | otherSp-qcList.csv | otherSp-qcREF.csv, GoogleSearchEfficiency.pdf, DataIrregularity.pdf | (construct a reference frame for other species), summarise efficiency and effort for the manual text correction process
 reArrange.r | cf425FULL.rda, otherSp-qcList.csv, genCols-qcList.tsv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
+selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425

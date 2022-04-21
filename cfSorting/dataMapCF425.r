@@ -13,69 +13,67 @@ clREF = read.table("../data/colDict-ExcSep.csv", sep="!", header=T, stringsAsFac
 #clSUM = read.csv("../data/attributesTotal.csv", header=T, stringsAsFactors=F, row.names=1)
 yR = as.numeric(substr(names(cf425)[yEar], 1, 4))
 
-##### fuse data ##### ~6 mins
+##### fuse data ##### 5 mins
 #d0 = date()
 rEc = cf425[[1]]; rEc$year = yR[1]
 for(i in 2:length(yEar)){ #cat(yR[i],", ")
 	if(i<7){ ## 2008-2013
 		x = cf425[[yEar[i]]]
-	}else if(i==7 | i==8){
+	}else if(i<9){
 		x = merge(cf425[[yEar[i]]], cf425[[yEar[i]+1]], all=T)
 	}else{
 		p = names(cf425)[grep(yR[i], names(cf425))]
 		mEd = grep("medi", p)
-		x0 = cf425[[p[mEd[1]]]]
-		for(i0 in 2:length(mEd)){x0 = rbind(x0,cf425[[p[mEd[i0]]]])}
-		x0 = x0[which(!is.na(x0$drugname)),]
-## remap medication history to per patients basis # 2 mins
+		x0 = cf425[[p[mEd[1]]]][,1:5]
+		for(i0 in 2:length(mEd)){x0 = rbind(x0,cf425[[p[mEd[i0]]]][,1:5])}
+		for(i0 in 2:ncol(x0)){x0[,i0] = tolower(x0[,i0])}
+		i1 = c();for(i0 in c("vitamin", "minerals","biphosphanates")){i1 = c(i1,grep(i0,x0[,4]))}
+		for(i0 in c("uppl", "sleep", "vitamin", "replacement", "anaphylaxis", "haliborange", "salt", "iron", "nurtini", "sugar", "skin", "epipen", "sea ", "eyedrops", "lotion", "nutri ", "juice", "feed", "energy", "magnesium", "nutrition", "leg ")){i1 = c(i1,grep(i0,x0[,5]))}
+		x0 = x0[-unique(i1),]
+		x0 = x0[which(!is.na(x0[,2])),]
+## remap medication history to per patients basis
 		medID = unique(x0$regid_anon)
-		#drugID = unique(as.character(apply(x0[,2:3],1, function(x){gsub("-NA","",paste(x, collapse="-"))})))
-		drugID = unique(x0$drugname)
-		x1 = as.data.frame(matrix(0, nr=length(medID), nc=length(drugID)+1))
+		x0[grep("please",x0[,2]),2] = x0[which(is.na(x0[,3])),3] = ""
+		for(i0 in c("vit", "shake", "juice", "water", "sodium chloride", "factor", "bath oil")){x0[grep(i0,x0[,2]),2] = x0[grep(i0,x0[,3]),3] = ""}
+		x0$drugs = gsub("@$","",gsub("^@","",paste(x0[,2],x0[,3], sep="@")))
+		x0$drugs[grep("[0-9]+/[0-9]+/",x0$drugs)] = x0[grep("[0-9]+/[0-9]+/",x0$drugs),4]
+		x1 = as.data.frame(matrix(NA,nr=length(medID),nc=2))
+		colnames(x1) = c(colnames(rEc)[1],"drugs")
 		x1[,1] = medID
-		colnames(x1) = c(colnames(x0)[1], drugID)
-		#p01 = date()
-		for(i0 in 1:nrow(x1)){ #cat(i0,",")
-			#x2 = unique(as.character(apply(x0[which(x0$regid_anon==x1[i0,1]),2:3], 1, function(x){gsub("-NA","",paste(x, collapse="-"))}))) # >4000 Others medicine diversity; lack of memory
-			x2 = unique(x0[which(x0$regid_anon==x1[i0,1]),"drugname"])
-			x1[i0,x2] = 1
-		}#;cat("\n");p01;date()
+		for(i0 in 1:nrow(x1)){x1[i0,2] = paste(x0$drugs[which(x0[,1]==x1[i0,1])],collapse="@")}
+		x1$drugs = gsub("!","e/a",gsub("/","@",gsub("e/a","!",x1$drugs)))
+		for(i0 in c(",","%"," x"," & ","[(]","[)]","e[.]g[.]", " @", "@ ", rep("@@",2))){x1$drugs = gsub(i0,"@",x1$drugs)}
+		x1$drugs = gsub("^@","",gsub("@$","",x1$drugs))
 ## merge reformatted medication histories to remaining data
 		x0 = merge(x1, cf425[[p[grep("NTM", p)]]], all=T)
 		x = merge(cf425[[p[grep("review", p)]]], x0, all=T)
-		rm(x0, x1, x2, p, mEd)
-	}
-	x$year = yR[i]
+		rm(x0, x1, p, mEd)
+	};x$year = yR[i]
 	colnames(x) = tolower(colnames(x))
 	rEc = merge(rEc,x, all=T)
 }#;cat("\n");d0;date()
 
-##### extract annual review patients & useful data attributes ##### 20220212
-dRop = c(13,15,17:22,25,33,43,52,seq(56,96,2),97:106,145,146,269,275,281,283,284,291,292,296:303,308:310,seq(318,324,2),328:330,334:339,366,369,373,376,377,381:394,402:409,411:414,416:453,seq(456,480,2),481:500,528:591,seq(598,616,2),617:620,seq(628,644,2),645:654,675,680)
+##### extract annual review patients & useful data attributes ##### 20220212, 20220422
+dRop = c();for(i in c("reason", "culturedate", "^is_pt", "_date", "freq$", "positivevalue", "dates$", "culturetype", "reastop")){dRop = c(dRop, grep(i,colnames(rEc)))};dRop = unique(dRop)
 regID = c();for(i in yEar){regID = unique(c(regID, cf425[[i]]$regid_anon))};rm(i)
 rEc = rEc[which(rEc$regid_anon %in% regID),-dRop]
 # Only patients with annual review presence in data + question multichoices are "tick" or "not ticked" = unticked entries == negative response instead of no info (i.e. 0 instead of NA)
 
 ##### standardize data ##### 20220212, 20220315
-for(i in 3:ncol(rEc)){rEc[,i] = tolower(rEc[,i])}
+for(i in 3:ncol(rEc)){rEc[,i] = tolower(rEc[,i])
+	uQ = unique(rEc[,i]);uQ0 = c(NA,1,2)
+	if(length(setdiff(uQ,uQ0))==length(setdiff(uQ0,uQ))){rEc[,i] = ifelse(rEc[,i]==1,1,0)}
+};rm(i,uQ)
 rEc[is.na(rEc)] = rEc[rEc=="no"] = rEc[rEc=="n"] = rEc[rEc=="nk"] = rEc[rEc=="unknown"] = 0
-mUlti = c("cult_specify","s05culturespeciesresistotherspec","macrolidespec","enzymespecifyother","oralbroncho_bamed","oralbroncho_theophmed","inhbroncho_sabamed","inhbroncho_labamed","inhbroncho_saacmed","inhbroncho_laacmed","inhbroncho_baacmed","other_antibiotics_specify","s05culturespeciesfungalotherspec","s05culturespeciesviralotherspeci")
+mUlti = c("cult_specify","s05culturespeciesresistotherspec","macrolidespec","enzymespecifyother","oralbroncho_bamed","oralbroncho_theophmed","inhbroncho_sabamed","inhbroncho_labamed","inhbroncho_saacmed","inhbroncho_laacmed","inhbroncho_baacmed","other_antibiotics_specify","s05culturespeciesfungalotherspec","s05culturespeciesviralotherspeci","corticocombomed","drugs")
 inDir = which(colnames(rEc)%in%mUlti)
 dirRef = rEc[,-c(1,2,inDir)];indRef = rEc[,c(1,2,inDir)] # sep (in)direct extractable info 20220323
 dirRef[dirRef!=0] = 1 # restrict to presence/absence data per patient
 dirRef = cbind(indRef[,1:2],dirRef)
 colnames(dirRef) = trimws(colnames(dirRef), which="both")
 
-##### f: listing column details ##### 20220212
-#dTl = function(x){
-#        x0 = unique(rEc[,x])
-#        cat(colnames(rEc)[x], ",", length(x0),",",class(rEc[,x]), "\n")
-#        if(length(x0)<10){cat(x0, "\n");print(table(rEc[,x]))}}
-#gWeird = function(x){return(grep(x, colnames(rEc0)))}
-#for(i in 3:ncol(rEc)){if(length(unique(rEc[,i]))>10){dTl(i)}};rm(i)
-
 ##### extract column (medicine + standard species) names ##### 20220227
-dEtails = which(colnames(indRef) %in% mUlti[c(3:12)])
+dEtails = which(colnames(indRef) %in% mUlti[c(3:12,15:length(mUlti))])
 zZ = c();for(i in dEtails){zZ = c(zZ,unique(indRef[,i]))}
 zZ = unique(zZ[-which(zZ=="0" | zZ=="nil" | zZ=="not taking")])
 zZ1 = setdiff(grep(", ",zZ), grep(")",zZ))
