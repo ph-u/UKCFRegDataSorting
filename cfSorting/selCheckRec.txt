@@ -1,0 +1,300 @@
+#######
+i = 1 
+      regid_anon year Aspergillus Candida Pseudomonas Pseudomonas aeruginosa
+61872    3IUCGCS 2013           1       1           1                      1
+      Pseudomonas aeruginosa (mucoid) Pseudomonas aeruginosa (non-mucoid)
+61872                               1                                   1
+      unidentified
+61872            1
+#######
+i = 2 
+      regid_anon year Achromobacter Candida albicans Chromobacterium
+39922    3ITGECS 2019             1                1               1
+      Mycobacterium avium Mycobacterium genavense Mycobacterium haemophilum
+39922                   1                       1                         1
+      Mycobacterium intracellulare Mycobacterium marinum
+39922                            1                     1
+      Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+39922                          1                     1                      1
+      Mycobacterium xenopi Mycobacteroides immunogenum
+39922                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+39922                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis Pseudomonas
+39922                     1                           1           1
+      Pseudomonas aeruginosa Staphylococcus aureus (Methicillin-resistant)
+39922                      1                                             1
+      unidentified
+39922            1
+#######
+i = 3 
+      regid_anon year Pseudomonas unidentified
+53888    3IUAFTA 2010           1            1
+#######
+i = 4 
+      regid_anon year Bacteria (G-neg) Candida albicans Coliform Bacteria
+13331    3IFSECA 2016                1                1                 1
+      Mycobacterium genavense Mycobacterium haemophilum Mycobacterium marinum
+13331                       1                         1                     1
+      Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+13331                          1                     1                      1
+      Mycobacterium xenopi Mycobacteroides immunogenum
+13331                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+13331                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis
+13331                     1                           1
+      Pseudomonas (Ciprofloxacin resist) Pseudomonas aeruginosa
+13331                                  1                      1
+      Pseudomonas aeruginosa (mucoid) Pseudomonas aeruginosa (non-mucoid)
+13331                               1                                   1
+      Staphylococcus unidentified
+13331              1            1
+#######
+i = 5 
+      regid_anon year Aspergillus Bacteria (G-neg) Chromobacterium
+15285    3IFSGGU 2019           1                1               1
+      Mycobacterium genavense Mycobacterium haemophilum Mycobacterium marinum
+15285                       1                         1                     1
+      Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+15285                          1                     1                      1
+      Mycobacterium xenopi Mycobacteroides immunogenum
+15285                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+15285                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis
+15285                     1                           1
+      Pseudomonas (Multi resist) Pseudomonas aeruginosa unidentified
+15285                          1                      1            1
+#######
+i = 6 
+      regid_anon year Aspergillus Candida albicans Enterococcus Pseudomonas
+86582    3IUGYUF 2012           1                1            1           1
+      Pseudomonas aeruginosa Pseudomonas aeruginosa (non-mucoid)
+86582                      1                                   1
+      Staphylococcus aureus unidentified
+86582                     1            1
+#######
+i = 7 
+      regid_anon year Bacteria (G-neg) Candida Candida albicans
+91930    3IUIIYY 2018                1       1                1
+      Coliform Bacteria Mycobacterium genavense Mycobacterium haemophilum
+91930                 1                       1                         1
+      Mycobacterium malmoense Mycobacterium marinum Mycobacterium scrofulaceum
+91930                       1                     1                          1
+      Mycobacterium szulgai Mycobacterium ulcerans Mycobacterium xenopi
+91930                     1                      1                    1
+      Mycobacteroides abscessus Mycobacteroides immunogenum
+91930                         1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+91930                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis Pseudomonas aeruginosa
+91930                     1                           1                      1
+      Pseudomonas aeruginosa (non-mucoid) Staphylococcus unidentified
+91930                                   1              1            1
+#######
+i = 8 
+     regid_anon year Aspergillus Candida albicans Pseudomonas aeruginosa
+7595    3IFETCC 2013           1                1                      1
+     Pseudomonas aeruginosa (non-mucoid) Staphylococcus Staphylococcus aureus
+7595                                   1              1                     1
+     unidentified Yeast
+7595            1     1
+#######
+i = 9 
+     regid_anon year Bacteria (G-neg) Haemophilus influenzae
+6194    3IFEITA 2017                1                      1
+     Mycobacterium genavense Mycobacterium haemophilum Mycobacterium marinum
+6194                       1                         1                     1
+     Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+6194                          1                     1                      1
+     Mycobacterium xenopi Mycobacteroides immunogenum
+6194                    1                           1
+     Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+6194                          1                               1
+     Mycolicibacter terrae Mycolicibacterium smegmatis
+6194                     1                           1
+     Pseudomonas (Multi resist) Pseudomonas aeruginosa
+6194                          1                      1
+     Pseudomonas aeruginosa (mucoid) Staphylococcus unidentified
+6194                               1              1            1
+#######
+i = 10 
+       regid_anon year Candida albicans Staphylococcus aureus unidentified
+104246    3IUTFEF 2014                1                     1            1
+       Yeast
+104246     1
+#######
+i = 11 
+      regid_anon year Candida albicans unidentified
+82131    3IUGGCY 2013                1            1
+#######
+i = 12 
+      regid_anon year Candida albicans unidentified
+44387    3ITGUYE 2012                1            1
+#######
+i = 13 
+      regid_anon year Geotrichum candidum Pseudomonas Pseudomonas aeruginosa
+55011    3IUAGTY 2013                   1           1                      1
+      Pseudomonas aeruginosa (mucoid) Yeast
+55011                               1     1
+#######
+i = 14 
+      regid_anon year Bacteria (G-neg) Candida Chromobacterium Escherichia coli
+29578    3IFUEFU 2016                1       1               1                1
+      Mycobacterium genavense Mycobacterium haemophilum Mycobacterium marinum
+29578                       1                         1                     1
+      Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+29578                          1                     1                      1
+      Mycobacterium xenopi Mycobacteroides immunogenum
+29578                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+29578                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis Pseudomonas
+29578                     1                           1           1
+      Pseudomonas aeruginosa Pseudomonas aeruginosa (non-mucoid) unidentified
+29578                      1                                   1            1
+#######
+i = 15 
+       regid_anon year Bacteria (G-neg) Candida albicans Chromobacterium
+109740    3IUUCSF 2016                1                1               1
+       Mycobacterium avium Mycobacterium genavense Mycobacterium haemophilum
+109740                   1                       1                         1
+       Mycobacterium intracellulare Mycobacterium marinum
+109740                            1                     1
+       Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+109740                          1                     1                      1
+       Mycobacterium xenopi Mycobacteroides immunogenum
+109740                    1                           1
+       Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+109740                          1                               1
+       Mycolicibacter terrae Mycolicibacterium smegmatis Pseudomonas aeruginosa
+109740                     1                           1                      1
+       Pseudomonas aeruginosa (mucoid) unidentified
+109740                               1            1
+#######
+i = 16 
+       regid_anon year Acinetobacter Aeromonas Bacteria (G-neg)
+122412    8AISASU 2017             1         1                1
+       Bordetella bronchiseptica Chryseobacterium indologenes Citrobacter
+122412                         1                            1           1
+       Coliform Bacteria Enterobacter cloacae Escherichia coli
+122412                 1                    1                1
+       Haemophilus influenzae Klebsiella Moraxella catarrhalis
+122412                      1          1                     1
+       Mycobacterium genavense Mycobacterium haemophilum Mycobacterium marinum
+122412                       1                         1                     1
+       Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+122412                          1                     1                      1
+       Mycobacterium xenopi Mycobacteroides immunogenum
+122412                    1                           1
+       Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+122412                          1                               1
+       Mycolicibacter terrae Mycolicibacterium smegmatis Ochrobactrum
+122412                     1                           1            1
+       Pseudomonas Pseudomonas aeruginosa unidentified
+122412           1                      1            1
+#######
+i = 17 
+      regid_anon year Bacteria (G-neg) Mycobacterium genavense
+52601    3IUACSU 2020                1                       1
+      Mycobacterium haemophilum Mycobacterium marinum
+52601                         1                     1
+      Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+52601                          1                     1                      1
+      Mycobacterium xenopi Mycobacteroides immunogenum
+52601                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+52601                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis Pseudomonas
+52601                     1                           1           1
+      Pseudomonas aeruginosa Pseudomonas aeruginosa (mucoid)
+52601                      1                               1
+      Pseudomonas aeruginosa (non-mucoid) unidentified
+52601                                   1            1
+#######
+i = 18 
+      regid_anon year unidentified
+66282    3IUEATT 2011            1
+#######
+i = 19 
+      regid_anon year Bacteria (G-neg) Pseudomonas Ralstonia unidentified
+90693    3IUIGGT 2008                1           1         1            1
+#######
+i = 20 
+      regid_anon year Bacteria (G-neg) Serratia unidentified
+28741    3IFUCGT 2020                1        1            1
+#######
+i = 21 
+      regid_anon year
+31885    3IFUIAC 2009
+#######
+i = 22 
+       regid_anon year Mycobacterium Pseudomonas Pseudomonas aeruginosa
+108117    3IUTYII 2010             1           1                      1
+       Staphylococcus aureus unidentified
+108117                     1            1
+#######
+i = 23 
+      regid_anon year unidentified
+49373    3ITITIC 2015            1
+#######
+i = 24 
+      regid_anon year
+12738    3IFSCGG 2008
+#######
+i = 25 
+      regid_anon year Aspergillus fumigatus Bacteria (G-neg) Candida albicans
+19110    3IFSYFT 2019                     1                1                1
+      Fungi Mycobacterium genavense Mycobacterium haemophilum
+19110     1                       1                         1
+      Mycobacterium marinum Mycobacterium scrofulaceum Mycobacterium szulgai
+19110                     1                          1                     1
+      Mycobacterium ulcerans Mycobacterium xenopi Mycobacteroides immunogenum
+19110                      1                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+19110                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis Pseudomonas
+19110                     1                           1           1
+      Staphylococcus unidentified Yeast
+19110              1            1     1
+#######
+i = 26 
+      regid_anon year Pseudomonas Staphylococcus aureus unidentified
+64453    3IUCTIE 2008           1                     1            1
+#######
+i = 27 
+      regid_anon year Bacteria (G-neg) Candida albicans Coliform Bacteria
+83026    3IUGICG 2017                1                1                 1
+      Mycobacterium genavense Mycobacterium haemophilum Mycobacterium marinum
+83026                       1                         1                     1
+      Mycobacterium scrofulaceum Mycobacterium szulgai Mycobacterium ulcerans
+83026                          1                     1                      1
+      Mycobacterium xenopi Mycobacteroides immunogenum
+83026                    1                           1
+      Mycolicibacillus trivialis Mycolicibacter nonchromogenicus
+83026                          1                               1
+      Mycolicibacter terrae Mycolicibacterium smegmatis Scedosporium Serratia
+83026                     1                           1            1        1
+      Stenotrophomonas unidentified
+83026                1            1
+#######
+i = 28 
+      regid_anon year Pseudomonas Pseudomonas aeruginosa Staphylococcus
+88052    3IUICFT 2010           1                      1              1
+      Staphylococcus aureus Stenotrophomonas
+88052                     1                1
+#######
+i = 29 
+      regid_anon year Aspergillus Pseudomonas Pseudomonas aeruginosa
+63377    3IUCSIA 2014           1           1                      1
+      Pseudomonas aeruginosa (non-mucoid) Serratia Staphylococcus
+63377                                   1        1              1
+      Staphylococcus aureus Stenotrophomonas
+63377                     1                1
+#######
+i = 30 
+      regid_anon year Candida albicans Citrobacter Pseudomonas
+73099    3IUFATF 2012                1           1           1
+      Pseudomonas aeruginosa unidentified
+73099                      1            1

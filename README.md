@@ -12,10 +12,11 @@ describeCF425.r | cf425.rda | tsPatients.pdf, attributesTotal.csv | data time-se
 colRefCF425.r | Data dictionary (xlsx), attributesTotal.csv, cf425\_extraDataGuide.csv | colDict-ExcSep.csv | generate column names equivalence table for UKCF-Reg data
 dataMapCF425.r | cf425.rda, colDict-ExcSep.csv | cf425FULL.rda, genCols.csv | remap full data into one dataframe by regid and year (tabulate medication record)
 otherSp.r | cf425FULL.rda | otherSp.csv | extract other species record
+medName.r | cf425FULL.rda | medName.csv | extract medicine name
 (manual) | otherSp.csv | otherSp-mod.csv | filter searchable names: include antimicrobial resistence
-searchAuto.sh | otherSp-mod.csv / genCols.csv | tmp | generate unique text list temporary for Wikipedia search (optimize reproducibility, traceability and efficiency trade-off)
-searchAuto.py | tmp | {otherSp,genCols}-wiki.csv | text correction using mostly reproducible Wikipedia search top hit
-(manual) | {otherSp,genCols}-wiki.csv | otherSp-qcList.csv, genCols-qcList.tsv | quality check automated search result; manual evaluation used [duckduckgo](https://duckduckgo.com/) search engine
+searchAuto.sh | {otherSp-mod,genCols,medName}.csv | tmp | generate unique text list temporary for Wikipedia search (optimize reproducibility, traceability and efficiency trade-off)
+searchAuto.py | tmp | {otherSp,genCols,medName}-wiki.csv | text correction using mostly reproducible Wikipedia search top hit
+(manual) | {otherSp,genCols,medName}-wiki.csv | {otherSp,genCols,medName}-qcList.csv | quality check automated search result; manual evaluation used [duckduckgo](https://duckduckgo.com/) search engine
 otherSpPlots.r | otherSp-qcList.csv | otherSp-qcREF.csv, GoogleSearchEfficiency.pdf, DataIrregularity.pdf | (construct a reference frame for other species), summarise efficiency and effort for the manual text correction process
-reArrange.r | cf425FULL.rda, otherSp-qcList.csv, genCols-qcList.tsv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
+reArrange.r | cf425FULL.rda, {otherSp,medNamegenCols}-qcList.csv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
 selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425

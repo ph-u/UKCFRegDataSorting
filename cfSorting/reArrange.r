@@ -12,7 +12,7 @@ cat("read reference data:",date(),"\n")
 library(stringr);
 load("../data/cf425FULL.rda");
 sP = read.csv("../data/otherSp-qcList.csv", header=T, stringsAsFactors=F);
-gC = read.table("../data/genCols-qcList.tsv", sep="\t", header=T, stringsAsFactors=F);
+gC = read.csv("../data/genCols-qcList.csv", header=T, stringsAsFactors=F);
 
 ##### construct medical,microbe dataframes #####
 cat("construct result dataframes:",date(),"\n")
@@ -77,15 +77,15 @@ for(i in 3:ncol(dirRef)){
 
 ##### map medical indirect record ##### 20220324
 cat("map medical indirect:",date(),"\n")
-mediNum = which(gC$med.microbe.other=="medical")
-for(i0 in 1:length(mediNum)){for(i1 in 3:ncol(indRef)){
-	a = grep(gC$input[mediNum[i0]],tolower(indRef[,i1]))
-	if(length(a)>0){
-		a0 = which(colnames(mEdic) %in% as.character(read.table(text=gC$QC.standardization[mediNum[i0]], sep=";")))
-		mEdic[a,a0] = mEdic[a,a0] +1
-}}};rm(mediNum,i0,i1,a,a0)
-for(i in 3:ncol(mEdic)){mEdic[,i] = ifelse(mEdic[,i]>0,1,0)};rm(i)
-write.csv(mEdic,"../data/cf425Medic.csv", quote=F, row.names=F)
+#mediNum = which(gC$med.microbe.other=="medical")
+#for(i0 in 1:length(mediNum)){for(i1 in 3:ncol(indRef)){
+#	a = grep(gC$input[mediNum[i0]],tolower(indRef[,i1]))
+#	if(length(a)>0){
+#		a0 = which(colnames(mEdic) %in% as.character(read.table(text=gC$QC.standardization[mediNum[i0]], sep=";")))
+#		mEdic[a,a0] = mEdic[a,a0] +1
+#}}};rm(mediNum,i0,i1,a,a0)
+#for(i in 3:ncol(mEdic)){mEdic[,i] = ifelse(mEdic[,i]>0,1,0)};rm(i)
+#write.csv(mEdic,"../data/cf425Medic.csv", quote=F, row.names=F)
 
 ##### map microbial indirect record ##### 20220324
 cat("standardise microbial indirect source columns:",date(),"\n")

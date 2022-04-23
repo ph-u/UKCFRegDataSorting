@@ -31,7 +31,7 @@ for(i in 2:length(yEar)){ #cat(yR[i],", ")
 		for(i0 in c("uppl", "sleep", "vitamin", "replacement", "anaphylaxis", "haliborange", "salt", "iron", "nurtini", "sugar", "skin", "epipen", "sea ", "eyedrops", "lotion", "nutri ", "juice", "feed", "energy", "magnesium", "nutrition", "leg ")){i1 = c(i1,grep(i0,x0[,5]))}
 		x0 = x0[-unique(i1),]
 		x0 = x0[which(!is.na(x0[,2])),]
-## remap medication history to per patients basis
+## remap medication history to per patients basis 20220421
 		medID = unique(x0$regid_anon)
 		x0[grep("please",x0[,2]),2] = x0[which(is.na(x0[,3])),3] = ""
 		for(i0 in c("vit", "shake", "juice", "water", "sodium chloride", "factor", "bath oil")){x0[grep(i0,x0[,2]),2] = x0[grep(i0,x0[,3]),3] = ""}
@@ -54,35 +54,42 @@ for(i in 2:length(yEar)){ #cat(yR[i],", ")
 }#;cat("\n");d0;date()
 
 ##### extract annual review patients & useful data attributes ##### 20220212, 20220422
-dRop = c();for(i in c("reason", "culturedate", "^is_pt", "_date", "freq$", "positivevalue", "dates$", "culturetype", "reastop")){dRop = c(dRop, grep(i,colnames(rEc)))};dRop = unique(dRop)
+dRop = c();for(i in c("reason", "culture[dt][ay]", "^is_pt", "_date", "freq$", "positivevalue", "dates$", "reastop", "s05numberof", "cult_[dt]", "result[ap]", "s05sectionstatus", "details$", "cult_sample_[stb]", "_specify_", "e_pulm", "s05ntm[hsnac][ateu]", "_validated", "rea[so][it]", "datesofstopping")){dRop = c(dRop, grep(i,colnames(rEc)))};dRop = unique(dRop)
 regID = c();for(i in yEar){regID = unique(c(regID, cf425[[i]]$regid_anon))};rm(i)
 rEc = rEc[which(rEc$regid_anon %in% regID),-dRop]
 # Only patients with annual review presence in data + question multichoices are "tick" or "not ticked" = unticked entries == negative response instead of no info (i.e. 0 instead of NA)
 
-##### standardize data ##### 20220212, 20220315
+##### standardize data ##### 20220212, 20220315, 20220421
 for(i in 3:ncol(rEc)){rEc[,i] = tolower(rEc[,i])
 	uQ = unique(rEc[,i]);uQ0 = c(NA,1,2)
 	if(length(setdiff(uQ,uQ0))==length(setdiff(uQ0,uQ))){rEc[,i] = ifelse(rEc[,i]==1,1,0)}
-};rm(i,uQ)
+};rm(i,uQ, uQ0)
 rEc[is.na(rEc)] = rEc[rEc=="no"] = rEc[rEc=="n"] = rEc[rEc=="nk"] = rEc[rEc=="unknown"] = 0
-mUlti = c("cult_specify","s05culturespeciesresistotherspec","macrolidespec","enzymespecifyother","oralbroncho_bamed","oralbroncho_theophmed","inhbroncho_sabamed","inhbroncho_labamed","inhbroncho_saacmed","inhbroncho_laacmed","inhbroncho_baacmed","other_antibiotics_specify","s05culturespeciesfungalotherspec","s05culturespeciesviralotherspeci","corticocombomed","drugs")
+mUlti = c("cult_specify","s05culturespeciesresistotherspec","macrolidespec","enzymespecifyother","oralbroncho_bamed","oralbroncho_theophmed","inhbroncho_sabamed","inhbroncho_labamed","inhbroncho_saacmed","inhbroncho_laacmed","inhbroncho_baacmed","other_antibiotics_specify","s05culturespeciesfungalotherspec","s05culturespeciesviralotherspeci","corticocombomed","drugs","corticoinhmed","leukotrienemodmed","antifungalsmed")
 inDir = which(colnames(rEc)%in%mUlti)
 dirRef = rEc[,-c(1,2,inDir)];indRef = rEc[,c(1,2,inDir)] # sep (in)direct extractable info 20220323
+dRop = c();for(i in 2:ncol(dirRef)){
+	if(length(unique(dirRef[,i]))<2){dRop = c(dRop,i)}else # non-info
+	if(any(dirRef[,i]=="select")){dirRef[,i] = ifelse(dirRef[,i]==2,0,dirRef[,i])} # 1 = checked; 2 = unchecked (sourced cf425 dictionary)
+};dirRef = dirRef[,-dRop] # non-informative columns
 dirRef[dirRef!=0] = 1 # restrict to presence/absence data per patient
 dirRef = cbind(indRef[,1:2],dirRef)
 colnames(dirRef) = trimws(colnames(dirRef), which="both")
 
-##### extract column (medicine + standard species) names ##### 20220227
-dEtails = which(colnames(indRef) %in% mUlti[c(3:12,15:length(mUlti))])
-zZ = c();for(i in dEtails){zZ = c(zZ,unique(indRef[,i]))}
-zZ = unique(zZ[-which(zZ=="0" | zZ=="nil" | zZ=="not taking")])
-zZ1 = setdiff(grep(", ",zZ), grep(")",zZ))
-zZ0 = read.table(text=zZ[zZ1], sep=",")
-zZ = zZ[-zZ1]
-for(i in 1:ncol(zZ0)){zZ = c(zZ, trimws(zZ0[,i], which="both"))}
-zZ = zZ[-grep("^[[:digit:]]",zZ)]
-zZ = c(zZ,colnames(dirRef)[-c(1,2)])
-zZ = unique(zZ)
-write.table(c("input",zZ[order(zZ)]),"../data/genCols.csv", sep="\t",quote=F,row.names=F, col.names=F)
+##### extract direct ref column names ##### 20220227, 20220422
+colNam = colnames(dirRef)[-c(1:2)]
+write.table(c("input",colNam[order(colNam)]),"../data/genCols.csv", sep="\t",quote=F,row.names=F, col.names=F)
+
+#dEtails = which(colnames(indRef) %in% mUlti[c(3:12,15:length(mUlti))])
+#zZ = c();for(i in dEtails){zZ = c(zZ,unique(indRef[,i]))}
+#zZ = unique(zZ[-which(zZ=="0" | zZ=="nil" | zZ=="not taking")])
+#zZ1 = setdiff(grep(", ",zZ), grep(")",zZ))
+#zZ0 = read.table(text=zZ[zZ1], sep=",")
+#zZ = zZ[-zZ1]
+#for(i in 1:ncol(zZ0)){zZ = c(zZ, trimws(zZ0[,i], which="both"))}
+#zZ = zZ[-grep("^[[:digit:]]",zZ)]
+#zZ = c(zZ,colnames(dirRef)[-c(1,2)])
+#zZ = unique(zZ)
+#write.table(c("input",zZ[order(zZ)]),"../data/genCols.csv", sep="\t",quote=F,row.names=F, col.names=F)
 
 save(rEc,yEar,yR,mUlti,dirRef,indRef, file="../data/cf425FULL.rda")

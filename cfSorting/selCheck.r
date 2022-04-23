@@ -2,7 +2,7 @@
 # author: ph-u
 # script: selCheck.r
 # desc: select 30 manual check data rows in cf425
-# in: Rscript selCheck.r
+# in: Rscript selCheck.r 1> selCheckRec.txt
 # out: NA
 # arg: 0
 # date: 20220419
@@ -18,7 +18,7 @@ repeat{sAm = sample(1:nrow(mIcro),nSel,replace=F);if(length(unique(mIcro$year[sA
 ##### manual check #####
 for(i in 1:nSel){
 	cat("#######\ni =",i,"\n")
-	print(mEdic[sAm[i],which(mEdic[sAm[i],]!=0)])
+#	print(mEdic[sAm[i],which(mEdic[sAm[i],]!=0)])
 	print(mIcro[sAm[i],which(mIcro[sAm[i],]!=0)])
 }#i = min(i+1,nSel)
 
