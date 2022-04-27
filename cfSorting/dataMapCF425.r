@@ -9,7 +9,7 @@
 
 ##### env #####
 load("../data/cf425.rda") # 5 sec - cf425, uniqNam, yEar
-clREF = read.table("../data/colDict-ExcSep.csv", sep="!", header=T, stringsAsFactors=F)
+#clREF = read.table("../data/colDict-ExcSep.csv", sep="!", header=T, stringsAsFactors=F)
 #clSUM = read.csv("../data/attributesTotal.csv", header=T, stringsAsFactors=F, row.names=1)
 yR = as.numeric(substr(names(cf425)[yEar], 1, 4))
 
@@ -59,37 +59,35 @@ regID = c();for(i in yEar){regID = unique(c(regID, cf425[[i]]$regid_anon))};rm(i
 rEc = rEc[which(rEc$regid_anon %in% regID),-dRop]
 # Only patients with annual review presence in data + question multichoices are "tick" or "not ticked" = unticked entries == negative response instead of no info (i.e. 0 instead of NA)
 
-##### standardize data ##### 20220212, 20220315, 20220421
-for(i in 3:ncol(rEc)){rEc[,i] = tolower(rEc[,i])
-	uQ = unique(rEc[,i]);uQ0 = c(NA,1,2)
-	if(length(setdiff(uQ,uQ0))==length(setdiff(uQ0,uQ))){rEc[,i] = ifelse(rEc[,i]==1,1,0)}
-};rm(i,uQ, uQ0)
-rEc[is.na(rEc)] = rEc[rEc=="no"] = rEc[rEc=="n"] = rEc[rEc=="nk"] = rEc[rEc=="unknown"] = 0
+##### separate direct/indirect reference columns ##### 20220421
 mUlti = c("cult_specify","s05culturespeciesresistotherspec","macrolidespec","enzymespecifyother","oralbroncho_bamed","oralbroncho_theophmed","inhbroncho_sabamed","inhbroncho_labamed","inhbroncho_saacmed","inhbroncho_laacmed","inhbroncho_baacmed","other_antibiotics_specify","s05culturespeciesfungalotherspec","s05culturespeciesviralotherspeci","corticocombomed","drugs","corticoinhmed","leukotrienemodmed","antifungalsmed")
 inDir = which(colnames(rEc)%in%mUlti)
 dirRef = rEc[,-c(1,2,inDir)];indRef = rEc[,c(1,2,inDir)] # sep (in)direct extractable info 20220323
-dRop = c();for(i in 2:ncol(dirRef)){
-	if(length(unique(dirRef[,i]))<2){dRop = c(dRop,i)}else # non-info
-	if(any(dirRef[,i]=="select")){dirRef[,i] = ifelse(dirRef[,i]==2,0,dirRef[,i])} # 1 = checked; 2 = unchecked (sourced cf425 dictionary)
-};dirRef = dirRef[,-dRop] # non-informative columns
+
+##### standardize data ##### 20220212, 20220315, 20220421
+dRop = c(); toZero = c("no","n","nk","unknown")
+for(i in 1:ncol(dirRef)){ if(length(grep("/",dirRef[,i]))>0){
+	dirRef[,i] = ifelse(is.na(dirRef[,i]),0,1)
+}else{
+	dirRef[,i] = tolower(dirRef[,i])
+	dirRef[is.na(dirRef[,i]),i] = 0
+	for(i0 in toZero){dirRef[dirRef[,i]==i0,i] = 0}
+	if(any(dirRef[,i]==2)){if(length(unique(dirRef[which(dirRef[,i]>2),i]))>0){
+		dirRef[,i] = ifelse(dirRef[,i]!=0,1,0) # counts
+	}else{
+		dirRef[,i] = ifelse(dirRef[,i]==1,1,0)
+		# 1 = checked; 2 = unchecked (sourced cf425 dictionary)
+	}}
+#	if(length(unique(dirRef[,i]))>2){cat(i,":",length(unique(dirRef[,i]))," - ",colnames(dirRef)[i]," - ",if(length(unique(dirRef[,i]))<10){unique(dirRef[,i])}else{head(unique(dirRef[,i]))},"\n")}
+}};rm(i)
 dirRef[dirRef!=0] = 1 # restrict to presence/absence data per patient
+for(i in 1:ncol(dirRef)){if(length(unique(dirRef[,i]))<2){dRop = c(dRop,i)}} # non-info
+dirRef = dirRef[,-dRop] # non-informative columns
 dirRef = cbind(indRef[,1:2],dirRef)
 colnames(dirRef) = trimws(colnames(dirRef), which="both")
 
 ##### extract direct ref column names ##### 20220227, 20220422
 colNam = colnames(dirRef)[-c(1:2)]
 write.table(c("input",colNam[order(colNam)]),"../data/genCols.csv", sep="\t",quote=F,row.names=F, col.names=F)
-
-#dEtails = which(colnames(indRef) %in% mUlti[c(3:12,15:length(mUlti))])
-#zZ = c();for(i in dEtails){zZ = c(zZ,unique(indRef[,i]))}
-#zZ = unique(zZ[-which(zZ=="0" | zZ=="nil" | zZ=="not taking")])
-#zZ1 = setdiff(grep(", ",zZ), grep(")",zZ))
-#zZ0 = read.table(text=zZ[zZ1], sep=",")
-#zZ = zZ[-zZ1]
-#for(i in 1:ncol(zZ0)){zZ = c(zZ, trimws(zZ0[,i], which="both"))}
-#zZ = zZ[-grep("^[[:digit:]]",zZ)]
-#zZ = c(zZ,colnames(dirRef)[-c(1,2)])
-#zZ = unique(zZ)
-#write.table(c("input",zZ[order(zZ)]),"../data/genCols.csv", sep="\t",quote=F,row.names=F, col.names=F)
 
 save(rEc,yEar,yR,mUlti,dirRef,indRef, file="../data/cf425FULL.rda")

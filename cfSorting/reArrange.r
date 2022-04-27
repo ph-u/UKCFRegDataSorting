@@ -59,6 +59,37 @@ qcREF = cbind(qcREF[,1],qcREFt)
 colnames(qcREF)[1] = x0;rm(x0,qcREFt)
 write.csv(qcREF,"../data/otherSp-qcREF.csv", quote=F, row.names=F)
 
+##### map medical indirect record ##### 20220324
+cat("map medical indirect:",date(),"\n")
+#mediNum = which(gC$med.microbe.other=="medical")
+#for(i0 in 1:length(mediNum)){for(i1 in 3:ncol(indRef)){
+#	a = grep(gC$input[mediNum[i0]],tolower(indRef[,i1]))
+#	if(length(a)>0){
+#		a0 = which(colnames(mEdic) %in% as.character(read.table(text=gC$QC.standardization[mediNum[i0]], sep=";")))
+#		mEdic[a,a0] = mEdic[a,a0] +1
+#}}};rm(mediNum,i0,i1,a,a0)
+#for(i in 3:ncol(mEdic)){mEdic[,i] = ifelse(mEdic[,i]>0,1,0)};rm(i)
+
+##### map microbial indirect record ##### 20220324
+cat("standardise microbial indirect source columns:",date(),"\n")
+miCol = c(3,7,20,21)
+for(i in miCol){
+	indRef[,i] = tolower(gsub("[$]","@",gsub("[(]","@",gsub("[)]","@",gsub("[+]","@", gsub("\\s+", " ", gsub("[.*]"," ",indRef[,i])))))))
+};rm(i)
+cat("map microbial indirect:",date(),"\n")
+qcTag = gsub("[$]","@",gsub("[(]","@",gsub("[)]","@",gsub("[+]","@",qcREF[,1])))) # filtered row
+for(i in 1:nrow(qcREF)){
+	wCol = which(qcREF[i,-1]!=0)+2 # column id for mIcro
+	a0=0;for(i0 in miCol){
+		a = grep(qcTag[i],indRef[,i0]);a0 = a0 + length(a)
+		if(length(a)>0){
+			if(length(wCol)>1){x = qcREF[i,wCol-1][rep(seq_len(1),each=length(a)),]}else{x = qcREF[i,wCol-1]}
+			mIcro[a,wCol] = mIcro[a,wCol] + x*str_count(indRef[a,i0],qcTag[i])
+	}};cat(i,":",date(),"(n =",a0,"-",qcREF$input[i],")\n")
+};rm(i,wCol,a0,a,x)
+cat("convert microbial indirect into presence/absence:",date(),"\n")
+for(i in 3:ncol(mIcro)){mIcro[,i] = ifelse(mIcro[,i]>0,1,0)};rm(i)
+
 ##### map direct record ##### 20220324
 cat("map direct record:",date(),"\n")
 for(i in 3:ncol(dirRef)){
@@ -75,38 +106,10 @@ for(i in 3:ncol(dirRef)){
 				mIcro[,a] = mIcro[,a] + as.numeric(dirRef[,i])
 }}}};rm(i,i0,a,a0,tK,tK0)
 
-##### map medical indirect record ##### 20220324
-cat("map medical indirect:",date(),"\n")
-#mediNum = which(gC$med.microbe.other=="medical")
-#for(i0 in 1:length(mediNum)){for(i1 in 3:ncol(indRef)){
-#	a = grep(gC$input[mediNum[i0]],tolower(indRef[,i1]))
-#	if(length(a)>0){
-#		a0 = which(colnames(mEdic) %in% as.character(read.table(text=gC$QC.standardization[mediNum[i0]], sep=";")))
-#		mEdic[a,a0] = mEdic[a,a0] +1
-#}}};rm(mediNum,i0,i1,a,a0)
 #for(i in 3:ncol(mEdic)){mEdic[,i] = ifelse(mEdic[,i]>0,1,0)};rm(i)
 #write.csv(mEdic,"../data/cf425Medic.csv", quote=F, row.names=F)
-
-##### map microbial indirect record ##### 20220324
-cat("standardise microbial indirect source columns:",date(),"\n")
-for(i in 3:ncol(indRef)){
-	indRef[,i] = gsub("[$]","@",gsub("[(]","@",gsub("[)]","@",gsub("[+]","@", gsub("\\s+", " ", gsub("[.*]"," ",indRef[,i]))))))
-};rm(i)
-cat("map microbial indirect:",date(),"\n")
-qcTag = gsub("[$]","@",gsub("[(]","@",gsub("[)]","@",gsub("[+]","@",qcREF[,1])))) # filtered row
-for(i in 1:nrow(qcREF)){
-	wCol = which(qcREF[i,-1]!=0)+2 # column id for mIcro
-	a0=0;for(i0 in 3:ncol(indRef)){
-		a = grep(qcTag[i],indRef[,i0]);a0 = a0 + length(a)
-		if(length(a)>0){
-			if(length(wCol)>1){x = qcREF[i,wCol-1][rep(seq_len(1),each=length(a)),]}else{x = qcREF[i,wCol-1]}
-			mIcro[a,wCol] = mIcro[a,wCol] + x*str_count(indRef[a,i0],qcTag[i])
-	}};cat(i,":",date(),"(n =",a0,"-",qcREF$input[i],")\n")
-};rm(i,wCol,a0,a,x)
-cat("convert microbial indirect into presence/absence:",date(),"\n")
 for(i in 3:ncol(mIcro)){mIcro[,i] = ifelse(mIcro[,i]>0,1,0)};rm(i)
 write.csv(mIcro,"../data/cf425Micro.csv", quote=F, row.names=F)
-
 save(mEdic,mIcro, file="../data/cf425MedMic.rda")
 cat("data sorting completed:",date(),"\n")
 #for(i in 2:ncol(qcREF)){if(all(qcREF[,i]<=0)){cat(i,",",colnames(qcREF)[i],"\n")}};rm(i)
