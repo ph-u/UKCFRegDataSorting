@@ -33,15 +33,15 @@ for(i in 1:length(gEn)){
 #tMp = sample(1:nrow(mIcro),30,replace=F);i=1
 #mIcro[tMp[i],which(mIcro[tMp[i],]!=0)];mcGen[tMp[i],which(mcGen[tMp[i],]!=0)];i = min(i+1,length(tMp))
 
-##### time-series conversion #####
+##### time-series conversion (unit: fraction) #####
 yR = unique(mIcro$year);yR = yR[order(yR)]
 mcGenTS = as.data.frame(matrix(0,nr=length(yR),nc=ncol(mcGen)-1))
 colnames(mcGenTS) = colnames(mcGen)[-1]
 mcGenTS$year = yR
 for(i0 in 1:nrow(mcGenTS)){
 	i1 = mcGen[which(mcGen$year==mcGenTS$year[i0]),-c(1:2)]
-	mcGenTS[i0,-1] = apply(i1,2,sum)/nrow(i1)*100
+	mcGenTS[i0,-1] = apply(i1,2,sum)/nrow(i1)
 };rm(i0,i1)
 
 ##### export #####
-write.csv(mcGenTS,"../data/genusTimeSeries.csv", row.names=F)
+write.csv(mcGenTS,"../data/genusTimeSeries_gLV.csv", quote=F, row.names=F)
