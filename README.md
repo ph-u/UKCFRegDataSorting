@@ -20,3 +20,4 @@ searchAuto.py | tmp | {otherSp,genCols,medName}-wiki.csv | text correction using
 otherSpPlots.r | otherSp-qcList.csv | otherSp-qcREF.csv, GoogleSearchEfficiency.pdf, DataIrregularity.pdf | (construct a reference frame for other species), summarise efficiency and effort for the manual text correction process
 reArrange.r | cf425FULL.rda, {otherSp,medNamegenCols}-qcList.csv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
 selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425
+micro2Genus.r | cf425Micro.csv / cf425MedMic.rda | genusTimeSeries.csv | sort mIcro data in genus time-series
