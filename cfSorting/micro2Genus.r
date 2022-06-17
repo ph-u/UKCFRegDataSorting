@@ -44,12 +44,19 @@ for(i0 in 1:nrow(mcGenTS)){
 	mcGenTS[i0,-1] = apply(i1,2,sum)/nrow(i1)
 };rm(i0,i1)
 
+##### plot legend format #####
+nDim = 2; nDim = c(nDim, ceiling(length(mcGenTS$year)/nDim))
+legMx = matrix(1:prod(nDim), nrow=nDim[1], ncol=nDim[2], byrow=T)
+legBd = rep("#000000ff", prod(nDim))
+legBd[legMx>length(mcGenTS$year)] = legMx[legMx>length(mcGenTS$year)] = NA
+
 ##### plot presence fractions #####
 tHs = as.numeric(argv[1])/100 ## 1% presence threshold (arbitrary from data observation)
-pdf("../../thesis/fig/cf425Genus.pdf", width=21, height=7)
-matplot(1:(ncol(mcGenTS)-1),t(mcGenTS)[-1,], type="l", xlab="Microbial genus presence in patients (alphabetical order)", ylab="proportion of patients", ylim=c(-.25,.7), cex.lab=1.4)
-abline(h=tHs); text(0,tHs+.05,paste("threshold =",tHs))
-legend("topleft",legend = mcGenTS$year, col = 1:nrow(mcGenTS), lty=1:nrow(mcGenTS), lwd=2)
+pdf("../../thesis/fig/cf425Genus.pdf", width=21, height=10)
+par(mar=c(14,5,0,0)+.1, xpd=F)
+matplot(1:(ncol(mcGenTS)-1),t(mcGenTS)[-1,], type="l", xlab="Microbial genus presence in patients (alphabetical order)", ylab="proportion of infected patients", ylim=c(-.25,.7), cex.lab=2, cex.axis=1.5)
+abline(h=tHs); text((ncol(mcGenTS)-1)*.3,tHs+.05,paste("threshold =",tHs), cex=2)
+legend("bottom", inset=c(0,-.35),legend = mcGenTS$year[legMx], title="Year", border=NA, xpd=T, col = c(1:nrow(mcGenTS),NA), lty=c(1:nrow(mcGenTS),NA), lwd=2, cex=2, ncol=nDim[2])
 xRef = colnames(mcGenTS)[-1]
 for(i in 2:ncol(mcGenTS)){if(all(mcGenTS[,i]<tHs)){
 	xRef[i-1] = "others"
