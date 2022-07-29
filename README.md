@@ -19,7 +19,8 @@ searchAuto.py | tmp | {otherSp,genCols,medName}-wiki.csv | text correction using
 (manual) | {otherSp,genCols,medName}-wiki.csv | {otherSp,genCols,medName}-qcList.csv | quality check automated search result; manual evaluation used [duckduckgo](https://duckduckgo.com/) search engine
 otherSpPlots.r | otherSp-qcList.csv | otherSp-qcREF.csv, GoogleSearchEfficiency.pdf, DataIrregularity.pdf | (construct a reference frame for other species), summarise efficiency and effort for the manual text correction process
 medNameExtraction.r | medName-qcList.csv | drug.csv | get standardized medication and active ingredient names
-(manual) | drug.csv | drug-qcList.csv | standardize medical classes and details
+(manual) | drug.csv | drug-url.csv | standardize medical classes and details
+medNameExtraction.py | drug-url.csv | drug-wiki.csv | collect standardized info
 reArrange.r | cf425FULL.rda, {otherSp,medNamegenCols}-qcList.csv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
 selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425
 micro2Genus.r | cf425Micro.csv / cf425MedMic.rda | genusCF425\_gLV.csv, cf425Genus.pdf | sort mIcro data in genus time-series
