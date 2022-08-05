@@ -18,8 +18,8 @@ iPt = function(x){
 ##### env #####
 argv = (commandArgs(T))
 library(stringr)
-mIcro = iPt("cf425Micro")#;mEdic = iPt("cf425Medic")
-#load("../data/cf425MedMic.rda")
+#mIcro = iPt("cf425Micro")#;mEdic = iPt("cf425Medic")
+load("../data/cf425MedMic.rda")
 
 ##### resort according to the list of genus #####
 gEn = word(colnames(mIcro)[-c(1,2)],1)

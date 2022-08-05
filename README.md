@@ -21,7 +21,7 @@ otherSpPlots.r | otherSp-qcList.csv | otherSp-qcREF.csv, GoogleSearchEfficiency.
 medNameExtraction.r | medName-qcList.csv | drug.csv | get standardized medication and active ingredient names
 (manual) | drug.csv | drug-url.csv | standardize medical classes and details
 medNameExtraction.py | drug-url.csv | drug-wiki.csv | collect standardized info
-reArrange.r | cf425FULL.rda, {otherSp,medNamegenCols}-qcList.csv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
+reArrange.r | cf425FULL.rda, {otherSp,medName,genCols}-qcList.csv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
 selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425
 micro2Genus.r | cf425Micro.csv / cf425MedMic.rda | genusCF425\_gLV.csv, cf425Genus.pdf | sort mIcro data in genus time-series
 genusTSCut.r | genusTimeSeries\_gLV.csv | gTS\_{startYr}{endYr}-gLV.csv |  cut genus time-series data in multiple csv

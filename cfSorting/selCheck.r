@@ -18,6 +18,6 @@ repeat{sAm = sample(1:nrow(mIcro),nSel,replace=F);if(length(unique(mIcro$year[sA
 ##### manual check #####
 for(i in 1:nSel){
 	cat("#######\ni =",i,"\n")
-#	print(mEdic[sAm[i],which(mEdic[sAm[i],]!=0)])
+	print(mEdic[sAm[i],which(mEdic[sAm[i],]!=0)])
 	print(mIcro[sAm[i],which(mIcro[sAm[i],]!=0)])
 }#i = min(i+1,nSel)
