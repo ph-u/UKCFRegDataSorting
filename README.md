@@ -25,4 +25,5 @@ reArrange.r | cf425FULL.rda, {otherSp,medName,genCols}-qcList.csv | cf425MedMic.
 selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425
 micro2Genus.r | cf425Micro.csv / cf425MedMic.rda | genusCF425\_gLV.csv, cf425Genus.pdf | sort mIcro data in genus time-series
 genusTSCut.r | genusTimeSeries\_gLV.csv | gTS\_{startYr}{endYr}-gLV.csv |  cut genus time-series data in multiple csv
+cftrM\_sep.r | cf425MedMic.rda | ../cftrM\_raw/cftrM\_{abs,mod,int}\_\[start\]\[end\]\_gLV.csv | categorize people with CF (pwCF) into CFTR-modifiers (cftrM) and interacting drugs categories + separate into different time-series
 plotGenusTS.r | gTS_{0820,0811,0813,1015,1113,1315,1619}\_gLV-{log,sam}.csv | gTS\_overall.pdf | plot time-series genus data with fitted simulations
