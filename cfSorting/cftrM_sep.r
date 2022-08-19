@@ -98,7 +98,7 @@ cProp = function(x,timeCol=2){
 	x0[,1] = t[order(t)];
 	for(i in 1:nrow(x0)){
 		x1 = x[which(x[,timeCol]==x0[i,1]),-c(1:2)];
-		x0[i,-1] = colSums(x1)/nrow(x1)*100;
+		x0[i,-1] = colSums(x1)/nrow(x1);
 	}
 	return(x0);
 }
