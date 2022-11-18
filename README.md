@@ -27,3 +27,9 @@ micro2Genus.r | cf425Micro.csv / cf425MedMic.rda | genusCF425\_gLV.csv, cf425Gen
 genusTSCut.r | genusTimeSeries\_gLV.csv | gTS\_{startYr}{endYr}-gLV.csv |  cut genus time-series data in multiple csv
 cftrM\_sep.r | cf425MedMic.rda | ../cftrM\_raw/cftrM\_{abs,mod,int}\_\[start\]\[end\]\_gLV.csv | categorize people with CF (pwCF) into CFTR-modifiers (cftrM) and interacting drugs categories + separate into different time-series
 plotGenusTS.r | gTS_{0820,0811,0813,1015,1113,1315,1619}\_gLV-{log,sam}.csv | gTS\_overall.pdf | plot time-series genus data with fitted simulations
+
+Notes for Computing
+
+- 20 mins for each prior search (4.5 CPU hours for 293 time-series; 20 Earth mins)
+- 7-11 hours for each BI-MCMC run (19,000 CPU hours for 293 time-series with 7 replicates each, 2051 runs in total partitioned into max limit of 448 simultaneous jobs in CSD3 cluster; 47 Earth hours)
+- a few seconds for each ecology analysis run (0.0 CPU hours recorded; a few Earth seconds)

@@ -90,7 +90,7 @@ sEp = which(colSums(samSize[,-1])>30);
 for(i in sEp){cat(i,":",nrow(a[[i]])); a[[i]] = a[[i]][which(a[[i]][,2] %in% samSize[which(samSize[,i+1]>0),1]),];cat("->",nrow(a[[i]]),"\n")}
 
 ##### f: category presence proportion by year #####
-cat("category presence % by year:",date(),"\n")
+cat("category presence fraction by year:",date(),"\n")
 cProp = function(x,timeCol=2){
 	t = unique(x[,timeCol]);
 	x0 = as.data.frame(matrix(0,nr=length(t),nc=ncol(x)-1));
@@ -112,7 +112,7 @@ pdf("../../thesis/fig/cftrm_perc.pdf", width=14);
 par(mar=c(2,4,2,10)+.1, mfrow=c(3,3), cex=.7, xpd=T);
 cOl = palette.colors(n =  length(a0), palette = "Okabe-Ito", .5, recycle=T);
 for(i in 1:length(a0)){
-	matplot(a0[[i]][,1],a0[[i]][,-1],type="b",pch=1:(ncol(a0[[i]])-1),xlim=range(yR),col=cOl,xlab="",ylab="pwCF % with genus presence (%)",main=paste("Medication categoty:",names(a0)[i]))
+	matplot(a0[[i]][,1],a0[[i]][,-1],type="b",pch=1:(ncol(a0[[i]])-1),xlim=range(yR),ylim=c(0,1),col=cOl,xlab="",ylab="pwCF ratio with genus presence",main=paste("Medication categoty:",names(a0)[i]))
 	if(i==3){legend("topright", inset=c(-.5,0), legend=colnames(mIcro0)[-c(1:2)], pch=1:(ncol(mIcro0)-1), lty=1:(ncol(mIcro0)-1), col=cOl, box.col="#00000000", horiz=F, title="Microbial\ncategories");
 }}
 invisible(dev.off());

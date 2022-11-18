@@ -64,6 +64,7 @@ for(i in 2:length(yEar)){ cat(yR[i],", ")
 	colnames(x) = tolower(colnames(x))
 	rEc = merge(rEc,x, all=T)
 };cat("\n");d0;date()
+save(rEc, file="../data/cf425RAW.rda")
 
 ##### extract annual review patients & useful data attributes ##### 20220212, 20220422
 cat("drop non-informative columns:",date(),"\n")
