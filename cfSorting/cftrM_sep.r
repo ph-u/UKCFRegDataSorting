@@ -10,20 +10,28 @@
 ##### import #####
 cat("data reading, environment preparation:",date(),"\n")
 load("../data/cf425MedMic.rda");
-library(stringr);
+#library(stringr);
 rEf = read.csv("../data/cftrm_interaction.csv", header=T,stringsAsFactors=F);
 anF = read.csv("../data/antiInfectives.csv", header=T, stringsAsFactors=F);
+muT = read.csv("../data/mutPWCF.csv", header=T, stringsAsFactors=F);
 
 ##### env #####
 lIm = .05; # presence threshold of a category to be considered as a separate one
 yR = unique(mIcro$year);yR = yR[order(yR)]; # timeline
 rEf = rEf[!is.na(rEf$affectedDrug),-ncol(rEf)]; # filter only confirmed interacting drugs
-cftrM = c();for(i in str_split(unique(rEf$cftrm),";")){cftrM = c(cftrM,i)};rm(i);cftrM = tolower(unique(cftrM)); # caftors list
-antiF = c();for(i in 1:3){for(i0 in str_split(unique(anF[,i]),";")){antiF = c(antiF,str_split(i0," / ")[[1]])}};rm(i,i0);antiF = unique(tolower(antiF));antiF = unique(c(antiF,sub("s$","",antiF[grep("s$",antiF)]))) # anti-infectives list: brand, ingredients, class
-intDr = c();for(i in str_split(unique(rEf$drug),";")){intDr = c(intDr,i)};rm(i);intDr = tolower(unique(intDr)); # interacting drug list
+cftrM = c();for(i in strsplit(unique(rEf$cftrm),";")){cftrM = c(cftrM,i)};rm(i);cftrM = tolower(unique(cftrM)); # caftors list
+#tricaftor = cftrM[grep("tri",cftrM)] # tricaftor list
+antiF = c();for(i in 1:3){for(i0 in strsplit(unique(anF[,i]),";")){antiF = c(antiF,strsplit(i0," / ")[[1]])}};rm(i,i0);antiF = unique(tolower(antiF));antiF = unique(c(antiF,sub("s$","",antiF[grep("s$",antiF)]))) # anti-infectives list: brand, ingredients, class
+intDr = c();for(i in strsplit(unique(rEf$drug),";")){intDr = c(intDr,i)};rm(i);intDr = tolower(unique(intDr)); # interacting drug list
 noMed = c("no_medication","exacerbations","aqua","starch","water",colnames(mEdic)[grep("intravenous",colnames(mEdic))]) # colnames representing no drugs
 dRugs = colnames(mEdic)[which(!(colnames(mEdic) %in% c(noMed,antiF,cftrM,"regid_anon","year")))]
 # assume if data only contain drug class, the drug used is not interacting with cftrM
+
+##### get only F508del pwCF #####
+cat("get the F508del pwCF group:",date(),"\n");
+F508del = muT$regid_anon[which(muT[,3]==1)]
+mIcro = mIcro[which(mIcro$regid_anon %in% F508del),]
+mEdic = mEdic[which(mEdic$regid_anon %in% F508del),]
 
 ##### sort medication categories #####
 cat("sort medication categories:",date(),"\n");
@@ -38,13 +46,15 @@ mEdic0[,5] = paste0(mEdic0[,1],mEdic0[,2],mEdic0[,3],mEdic0[,4],sep=""); # group
 
 ##### genus categories sorting #####
 cat("sort genus categories");
-gEn = word(colnames(mIcro)[-c(1,2)],1);
+#gEn = word(colnames(mIcro)[-c(1,2)],1);
+gEn0 = strsplit(colnames(mIcro)[-c(1,2)]," ");gEn = rep(NA,length(gEn0));
+for(i in 1:length(gEn0)){gEn[i] = gEn0[[i]][1]};rm(i);
 gEn0 = unique(gEn);
 cat(" (",length(gEn0),"categories ):",date(),"\n")
 yrFq = table(mIcro[,2]);
 genProp = as.data.frame(matrix(0,nr=length(yR),nc=length(gEn0)+1));
 colnames(genProp) = c("year",gEn0);
-genProp[,1] = yR;
+genProp$year = yR;
 for(i in 1:nrow(genProp)){
 	m0 = mIcro[which(mIcro$year==genProp[i,1]),];
 	for(i0 in gEn0){genProp[i,i0] = sum(rowSums(cbind(m0[,which(gEn==i0)+2],rep(0,nrow(m0))))>0)} # count pwCF hosting genus
@@ -71,8 +81,10 @@ colnames(samSize) = c("year",paste("g",names(a),sep=""));
 samSize$year = yR
 for(i in 2:ncol(samSize)){a0 = table(a[[i-1]][,2]);samSize[which(samSize[,1] %in% names(a0)),i] = a0}
 ## graph + counts
-write.csv(samSize,"../data/cftrm_samFreq.csv", row.names=F, quote=F);
-pdf("../../thesis/fig/cftrm_samFreq.pdf", width=14);
+#write.csv(samSize,"../data/cftrm_samFreq.csv", row.names=F, quote=F);
+write.csv(samSize,"../graph/cftrm_samFreq.csv", row.names=F, quote=F);
+#pdf("../../thesis/fig/cftrm_samFreq.pdf", width=14);
+pdf("../graph/cftrm_samFreq.pdf", width=14);
 par(mar=c(4,4,0,5)+.1, cex=1.5, xpd=T);
 cOl = palette.colors(n =  length(a), palette = "Okabe-Ito", .5, recycle=T)
 cOl[10:length(cOl)] = paste0(substr(cOl[10:length(cOl)],1,7),"FF",sep="")
@@ -108,7 +120,8 @@ for(i in 1:length(sEp)){a0[[i]] = cProp(a[[sEp[i]]])}
 #noCFTRM0 = cProp(noCFTRM); olCFTRM0 = cProp(olCFTRM); itCFTRM0 = cProp(itCFTRM); # category presence proportion per year
 
 ##### plot overall percentage plots of medication groups #####
-pdf("../../thesis/fig/cftrm_perc.pdf", width=14);
+#pdf("../../thesis/fig/cftrm_perc.pdf", width=14);
+pdf("../graph/cftrm_perc.pdf", width=14);
 par(mar=c(2,4,2,10)+.1, mfrow=c(3,3), cex=.7, xpd=T);
 cOl = palette.colors(n =  length(a0), palette = "Okabe-Ito", .5, recycle=T);
 for(i in 1:length(a0)){
@@ -119,8 +132,8 @@ invisible(dev.off());
 
 ##### f: cut time-series #####
 cat("cut data into different time-series:",date(),"\n")
-tsCut = function(x,tYpe){ for(i0 in 1:(nrow(x)-2)){ for(i1 in 3:nrow(x)){ if(x[i1,1]-x[i0,1]>1){
-	write.csv(x[i0:i1,],paste0("../cftrM_raw/cftrM_",tYpe,"_",paste0(substr(x[c(i0,i1),1],3,4), collapse=""),"_gLV.csv"), row.names=F, quote=F)
+tsCut = function(x,tYpe){ for(i0 in 1:(nrow(x)-2)){ for(i1 in 3:nrow(x)){ if(x[i1,1]-x[i0,1]==2){#>1){ # 3 consecutive years only
+	write.csv(x[i0:i1,],paste0("../cftrM_raw_20221202/cftrM_",tYpe,"_",paste0(substr(x[c(i0,i1),1],3,4), collapse=""),"_gLV.csv"), row.names=F, quote=F)
 }}}}
 for(i in 1:length(a0)){tsCut(a0[[i]],names(a0)[i])}
 #tsCut(noCFTRM0,"abs"); tsCut(olCFTRM0,"mod"); tsCut(itCFTRM0,"int") # export time-series of various time periods

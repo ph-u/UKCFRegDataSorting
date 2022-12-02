@@ -23,6 +23,7 @@ medNameExtraction.r | medName-qcList.csv | drug.csv | get standardized medicatio
 medNameExtraction.py | drug-url.csv | drug-wiki.csv | collect standardized info
 reArrange.r | cf425FULL.rda, {otherSp,medName,genCols}-qcList.csv | cf425MedMic.rda, {otherSp-qcREF,cf425Medic,cf425Micro}.csv | rearrange columns to medical,microbe dataframes (data sort log: Rscript reArrange.r >> ../data/reArrangeRec.txt; 0.5hr runtime)
 selCheck.r | cf425MedMic.rda | NA | select 30 manual check data rows in cf425
+mutSort.r | [1st run] 425A\_DataRequest\_final.xlsx, mutation\_lookup\_table\_April2022.xlsx [others] mutLib\_r.csv, mutLib.csv | [1st run] mutLib.{csv,txt} [others] mutPWCF.csv | sort CF mutation of pwCF
 micro2Genus.r | cf425Micro.csv / cf425MedMic.rda | genusCF425\_gLV.csv, cf425Genus.pdf | sort mIcro data in genus time-series
 genusTSCut.r | genusTimeSeries\_gLV.csv | gTS\_{startYr}{endYr}-gLV.csv |  cut genus time-series data in multiple csv
 cftrM\_sep.r | cf425MedMic.rda | ../cftrM\_raw/cftrM\_{abs,mod,int}\_\[start\]\[end\]\_gLV.csv | categorize people with CF (pwCF) into CFTR-modifiers (cftrM) and interacting drugs categories + separate into different time-series
