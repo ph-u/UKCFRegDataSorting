@@ -3,7 +3,7 @@
 # script: clusterHeatmap.r
 # desc: cftrM data ecology comparisons
 # in: Rscript clusterHeatmap.r
-# out: cftrM_result/heatmap_*.pdf
+# out: graph/cftrM/heatmap/heatmap_*.pdf
 # arg: 0
 # date: 20220822
 
@@ -63,7 +63,8 @@ for(i in 1:length(fQ)){
 	fCap = function(x){paste(toupper(substr(x,1,1)),substr(x,2,nchar(x)),sep="")}
 	row.names(heatMedian) = fCap(row.names(heatMedian))
 ## plot
-	pdf(paste0(gsub("data","result",pT),"heatMap_",names(fQ)[i],".pdf"), width=9)
+#	pdf(paste0(gsub("data","result",pT),"heatMap_",names(fQ)[i],".pdf"), width=9)
+	pdf(paste0("../graph/cftrM/heatmap/heatMap_",names(fQ)[i],".pdf"), width=9)
 ## heatmap
 # https://stackoverflow.com/questions/15587734/saving-levelplot-to-file-in-rs-lattice-package
 	print(levelplot(t(rbind(gMtx[rev(1:nrow(gMtx)),rOw],heatMedian[,rOw])),
