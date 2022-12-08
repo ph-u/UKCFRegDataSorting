@@ -30,6 +30,8 @@ cftrM\_sep.r | cf425MedMic.rda | ../cftrM\_raw/cftrM\_{abs,mod,int}\_\[start\]\[
 plotGenusTS.r | gTS_{0820,0811,0813,1015,1113,1315,1619}\_gLV-{log,sam}.csv | gTS\_overall.pdf | plot time-series genus data with fitted simulations
 clusterHeatmap.r | cftrM\_data/\*.csv | graph/cftrM/heatmap/heatMap_\*.pdf | heatmap clustering grphs for CFTRm segregated time-series data
 F508delTSPlots.r | F508del\_data/\*.csv | graph/F508del/\*.pdf | rolling mean plots of 3 consecutive years for F508del mutation CFTRm segregated time-series
+F508delStats.r | [selected -eco.csv] | [none] | statistical tests for F508del group
+F508delCorrelation.r | cf425MedMic.rda, cftrm\_interaction.csv, antiInfectives.csv, mutPWCF.csv, F508del\_data/\*-eco.csv | F508\_Correlation.csv | Correlation between CFTRm yearly diff with gLV model ability
 
 Notes for Computing
 
