@@ -17,6 +17,9 @@ sEq = c(2,9,3,4,5,6,7,1,8)
 cBp = palette.colors(palette = "Okabe-Ito", alpha=1, recycle = T)[sEq]
 #cBl = palette.colors(palette = "Okabe-Ito", alpha=.1, recycle = T)[sEq]
 
+##### f: capitalise first letter #####
+capFirst = function(x){return(paste0(toupper(substr(x,1,1)),substr(x,2,nchar(x))))}
+
 ##### files #####
 cat("Import file list: ",date(),"\n")
 f = list.files(ptIN,"-eco")
@@ -74,7 +77,7 @@ for(i in 1:length(f0)){z = 0; cat(i,"(",date(),"),\n")
 		for(i1 in 3:ncol(ecoTS[[i0]])){polygon(tS, c(ecoTS[[i0]][,i1],rev(ecoTS[[i0]][,i1-1])), col=cBp[i1-1], border="#FFFFFFFF")}
 ### legend plot
 		plot.new()
-		legend("top", inset=c(0,0), legend = sub("c2","B",eCo[legMx]), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=nDim[2], pch = rep(19,length(eCo)), col = cBp)
+		legend("top", inset=c(0,0), legend = capFirst(gsub("_"," ",sub("c2","B",eCo[legMx]))), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=nDim[2], pch = rep(19,length(eCo)), col = cBp)
 #		legend("top", inset=c(0,0), legend = sub("c2","B",eCo[legMx]), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=nDim[2], pch = c((1:length(eCo))%%25,NA), lty=c((1:length(eCo))%%5+1,NA), lwd=2, col = cBp)
 		invisible(dev.off())
 	};rm(i0)
