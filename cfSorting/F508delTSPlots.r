@@ -97,7 +97,7 @@ for(i in 1:length(f0)){z = 0; cat(i,"(",date(),"),\n")
 
 ### export
 		pdf(paste0(ptOT,f0[i],"_",sPair[i0],".pdf"), width=14, height=11)
-		par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.5, xpd=T)
+		par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.4, xpd=T)
 		barplot(ecoPlot, ylim=c(0,100), xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
 		axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
 		mtext("Year (Group Sample Size) (Total Sample Size)",side=1,padj=4.9,cex=2.1)
