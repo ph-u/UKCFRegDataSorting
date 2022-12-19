@@ -20,6 +20,34 @@ cBp = palette.colors(palette = "Okabe-Ito", alpha=1, recycle = T)[sEq]
 ##### f: capitalise first letter #####
 capFirst = function(x){return(paste0(toupper(substr(x,1,1)),substr(x,2,nchar(x))))}
 
+##### f: plot legend #####
+legPlot = function(x,nDim=3){
+	nDim = c(nDim, ceiling(length(x)/nDim))
+	legMx = matrix(1:prod(nDim), nrow=nDim[1], ncol=nDim[2], byrow=F)
+	legBd = rep("#000000ff", prod(nDim))
+	legBd[legMx>length(x)] = legMx[legMx>length(x)] = NA
+	return(list(legMx,nDim[2]))
+}
+
+##### treatment distribution along time #####
+samSize = read.csv("../graph/cftrm_samFreq.csv", header=T)
+x = c("Year","total","CFTRm","antimicrobials","chemicals","drug_interaction")
+tReat = as.data.frame(matrix(nr=nrow(samSize), nc=length(x)))
+colnames(tReat) = x;rm(x)
+tReat$Year = samSize$year
+tReat$total = apply(samSize[,-1],1,sum)
+for(i in 3:ncol(tReat)){
+	tReat[,i] = apply(samSize[,which(substr(colnames(samSize),i-1,i-1)==1)],1,sum)
+};rm(i)
+
+pdf(paste0(ptOT,"medication.pdf"), width=14, height=11)
+par(mar=c(5,4.5,1,1)+.1, mfrow=c(2,1), xpd=T)
+matplot(tReat[,1], tReat[,-1], type="l", lty=1:(ncol(tReat)-1), col=1:(ncol(tReat)-1), lwd=3, xlab="Year", ylab="Samples", cex.axis=1.7, cex.lab=2.1)
+plot.new()
+lPt = legPlot(colnames(tReat)[-1], 2)
+legend("top", legend=sub("_"," ",capFirst(colnames(tReat)[-1]))[lPt[[1]]], border=NA, ncol=lPt[[2]], lty=c(1:(ncol(tReat)-1),NA), title="Annual Review Medication Records", col=1:(ncol(tReat)-1), lwd=5, cex=2.1)
+invisible(dev.off())
+
 ##### files #####
 cat("Import file list: ",date(),"\n")
 f = list.files(ptIN,"-eco")
@@ -58,27 +86,25 @@ for(i in 1:length(f0)){z = 0; cat(i,"(",date(),"),\n")
 	};rm(i0)
 ## plot dataframes
 	for(i0 in 1:length(sPair)){
-		for(i1 in 3:ncol(ecoTS[[i0]])){ecoTS[[i0]][,i1] = ecoTS[[i0]][,i1] + ecoTS[[i0]][,i1-1]};rm(i1)
+#		for(i1 in 3:ncol(ecoTS[[i0]])){ecoTS[[i0]][,i1] = ecoTS[[i0]][,i1] + ecoTS[[i0]][,i1-1]};rm(i1)
 		ecoTS[[i0]][,-1] = ecoTS[[i0]][,-1]/(simO*nRep)*100
 		tS = c(ecoTS[[i0]]$year,rev(ecoTS[[i0]]$year))
-
-### legend
-		nDim = 3;nDim = c(nDim, ceiling(length(eCo)/nDim))
-		legMx = matrix(1:prod(nDim), nrow=nDim[1], ncol=nDim[2], byrow=F)
-		legBd = rep("#000000ff", prod(nDim))
-		legBd[legMx>length(eCo)] = legMx[legMx>length(eCo)] = NA
+### stacked barplot prep
+		ecoPlot = ecoTS[[i0]][,-1]
+		ecoPlot[nrow(ecoPlot)+c(1:2),] = 0
+		ecoPlot = as.matrix(t(ecoPlot[c(nrow(ecoPlot)-1:0,1:(nrow(ecoPlot)-2)),]))
+		colnames(ecoPlot) = paste0(yR,"\n(",samSize[,which(colnames(samSize)==paste0("g",f0[i]))],")\n(",tReat[,2],")")
 
 ### export
 		pdf(paste0(ptOT,f0[i],"_",sPair[i0],".pdf"), width=14, height=11)
-		par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), xpd=T)
-		plot(yR[1],0, col="#FFFFFFFF", xlim=range(yR), ylim=c(0,100), ylab=paste(sPair[i0], "(%)"), xlab="Year", cex.axis=2.1, cex.lab=1.5)
-		polygon(rep(c(yR[1],yR[3]),each=2), c(0,100,100,0), col="#00000011", border="#FFFFFFFF") # grey-out data-deficient area
-		polygon(tS, c(ecoTS[[i0]][,2],rep(0,nrow(ecoTS[[i0]]))), col=cBp[1], border="#FFFFFFFF") # first data column (mutualism)
-		for(i1 in 3:ncol(ecoTS[[i0]])){polygon(tS, c(ecoTS[[i0]][,i1],rev(ecoTS[[i0]][,i1-1])), col=cBp[i1-1], border="#FFFFFFFF")}
+		par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.5, xpd=T)
+		barplot(ecoPlot, ylim=c(0,100), xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
+		axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
+		mtext("Year (Group Sample Size) (Total Sample Size)",side=1,padj=4.9,cex=2.1)
 ### legend plot
 		plot.new()
-		legend("top", inset=c(0,0), legend = capFirst(gsub("_"," ",sub("c2","B",eCo[legMx]))), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=nDim[2], pch = rep(19,length(eCo)), col = cBp)
-#		legend("top", inset=c(0,0), legend = sub("c2","B",eCo[legMx]), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=nDim[2], pch = c((1:length(eCo))%%25,NA), lty=c((1:length(eCo))%%5+1,NA), lwd=2, col = cBp)
+		lPt = legPlot(eCo)
+		legend("top", inset=c(0,0), legend = capFirst(gsub("_"," ",sub("c2","B",eCo[lPt[[1]]]))), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=lPt[[2]], pch = rep(19,length(eCo)), col = cBp)
 		invisible(dev.off())
 	};rm(i0)
 };rm(i);cat("Done",date(),"\n")

@@ -29,7 +29,7 @@ genusTSCut.r | genusTimeSeries\_gLV.csv | gTS\_{startYr}{endYr}-gLV.csv |  cut g
 cftrM\_sep.r | cf425MedMic.rda | ../cftrM\_raw/cftrM\_{abs,mod,int}\_\[start\]\[end\]\_gLV.csv | categorize people with CF (pwCF) into CFTR-modifiers (cftrM) and interacting drugs categories + separate into different time-series
 plotGenusTS.r | gTS_{0820,0811,0813,1015,1113,1315,1619}\_gLV-{log,sam}.csv | gTS\_overall.pdf | plot time-series genus data with fitted simulations
 clusterHeatmap.r | cftrM\_data/\*.csv | graph/cftrM/heatmap/heatMap_\*.pdf | heatmap clustering grphs for CFTRm segregated time-series data
-F508delTSPlots.r | F508del\_data/\*.csv | graph/F508del/\*.pdf | rolling mean plots of 3 consecutive years for F508del mutation CFTRm segregated time-series
+F508delTSPlots.r | F508del\_data/\*.csv, graph/cftrm\_samFreq.csv | graph/F508del/\*.pdf, graph/F508del/medication.pdf | rolling mean plots of 3 consecutive years for F508del mutation CFTRm segregated time-series
 F508delStats.r | [selected -eco.csv] | [none] | statistical tests for F508del group
 F508delCorrelation.r | cf425MedMic.rda, cftrm\_interaction.csv, antiInfectives.csv, mutPWCF.csv, F508del\_data/\*-eco.csv | F508\_Correlation.csv | Correlation between CFTRm yearly diff with gLV model ability
 
