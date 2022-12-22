@@ -65,3 +65,26 @@ cat("Drug interaction influence: without vs with\n")
 drugInt = tComp(p1,p2,c("Pseu","Staph"))
 drugInt$data[which(drugInt$data$Eco=="mutualism"),] # 1110 group all 0
 drugInt$data[grep("preda", drugInt$data$Eco),] # 1111 group not all 0
+
+##### Same pair, ecological diff wihtin same period ##### 20221221
+tEst = c("0911","1012","1719")
+x = c("W","p","adj.p")
+wxBH = as.data.frame(matrix(nr=length(tEst), nc=length(x)))
+colnames(wxBH) = x;rm(x)
+for(i0 in 1:length(tEst)){
+	d1 = read.csv(paste0("../F508del_data/cftrM_0110_",tEst[i0],"_gLV-eco.csv"), stringsAsFactors=F)
+	d1 = d1[which(d1$category1=="Pseudomonas" & d1$category2=="Stenotrophomonas"),]
+	eLim = c();for(i in unique(d1$c1_is)){if(any(d1$count[which(d1$c1_is==i)]!=0)){eLim = c(eLim,i)}};rm(i)
+	d1 = d1[which(d1$c1_is %in% eLim),]
+	w0 = wilcox.test(d1$ratio_in_rep[which(substr(d1$c1_is,1,4)=="comm")],d1$ratio_in_rep[which(substr(d1$c1_is,1,4)!="comm")])
+	wxBH[i0,-ncol(wxBH)] = c(w0$statistic, w0$p.value)
+};rm(i0,w0)
+wxBH[,ncol(wxBH)] = p.adjust(wxBH[,2],method="BH")
+
+d1 = read.csv(paste0("../F508del_data/cftrM_1111_1315_gLV-eco.csv"), stringsAsFactors=F)
+d1 = d1[which(d1$category1=="Mycobacteroides" & d1$category2=="Pseudomonas"),]
+eLim = c();for(i in unique(d1$c1_is)){if(any(d1$count[which(d1$c1_is==i)]!=0)){eLim = c(eLim,i)}};rm(i)
+d1 = d1[which(d1$c1_is %in% eLim),]
+x0 = d1$ratio_in_rep[which(substr(d1$c1_is,1,4)=="comm")]
+x1 = d1$ratio_in_rep[which(substr(d1$c1_is,1,4)!="comm")]
+wilcox.test(c(x0,rep(0,7-length(x0))),c(x1,rep(0,7-length(x1))))
