@@ -42,11 +42,11 @@ for(i in 3:ncol(tReat)){
 
 pdf(paste0(ptOT,"medication.pdf"), width=14, height=11)
 par(mar=c(5,4.5,1,1)+.1, mfrow=c(2,1), xpd=F)
-matplot(tReat[,1], tReat[,-1], type="l", lty=1:(ncol(tReat)-1), col=1:(ncol(tReat)-1), lwd=3, xlab="Year", ylab="Samples", cex.axis=1.7, cex.lab=2.1)
+matplot(tReat[,1], tReat[,-1], type="l", lty=1:(ncol(tReat)-1), col=cBp[1:(ncol(tReat)-1)], lwd=3, xlab="Year", ylab="Samples", cex.axis=1.7, cex.lab=2.1)
 abline(h=0, col="#000000ff")
 plot.new()
 lPt = legPlot(colnames(tReat)[-1], 2)
-legend("top", legend=sub("_"," ",capFirst(colnames(tReat)[-1]))[lPt[[1]]], border=NA, ncol=lPt[[2]], lty=c(1:(ncol(tReat)-1),NA), title="Annual Review Medication Records", col=1:(ncol(tReat)-1), lwd=5, cex=2.1)
+legend("top", legend=sub("_"," ",capFirst(colnames(tReat)[-1]))[lPt[[1]]], border=NA, ncol=lPt[[2]], lty=c(1:(ncol(tReat)-1),NA), title="Annual Review Medication Records", col=cBp[1:(ncol(tReat)-1)], lwd=5, cex=2.1)
 invisible(dev.off())
 
 ##### files #####
