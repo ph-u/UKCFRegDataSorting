@@ -31,7 +31,7 @@ legPlot = function(x,nDim=3){
 
 ##### treatment distribution along time #####
 samSize = read.csv("../graph/cftrm_samFreq.csv", header=T)
-x = c("Year","total","CFTRm","antimicrobials","chemicals","drug_interaction")
+x = c("Year","total","CFTR_modulators","antimicrobials","drugs/supplements","drug_interaction")
 tReat = as.data.frame(matrix(nr=nrow(samSize), nc=length(x)))
 colnames(tReat) = x;rm(x)
 tReat$Year = samSize$year
@@ -39,14 +39,22 @@ tReat$total = apply(samSize[,-1],1,sum)
 for(i in 3:ncol(tReat)){
 	tReat[,i] = apply(samSize[,which(substr(colnames(samSize),i-1,i-1)==1)],1,sum)
 };rm(i)
+#write.csv(tReat,"../graph/medication.csv", quote=F, row.names=F)
 
-pdf(paste0(ptOT,"medication.pdf"), width=14, height=11)
-par(mar=c(5,4.5,1,1)+.1, mfrow=c(2,1), xpd=F)
-matplot(tReat[,1], tReat[,-1], type="b", pch=1:(ncol(tReat)-1), lty=1, col=cBp[1:(ncol(tReat)-1)], lwd=3, xlab="Year", ylab="Samples", cex.axis=1.7, cex.lab=2.1)
-abline(h=0, col="#000000ff")
+pdf(paste0(ptOT,"medication.pdf"), width=14, height=21)
+par(mar=c(10,9,3,3)+.1, mfrow=c(2,1), xpd=F)
+matplot(tReat[,1], tReat[,-1], type="b", pch=20+(1:(ncol(tReat)-1)), lty=1, col=cBp[1:(ncol(tReat)-1)], lwd=12, cex=7, xaxt="n", yaxt="n", xlab="", ylab="", cex.axis=3.5)
+axis(1, at=tReat[,1], labels=tReat[,1], lwd=10, cex.axis=4.2, padj=1.2, tck=-.02)
+xLab=tReat[seq(1,nrow(tReat), by=3),1]
+axis(1, at=xLab, labels=xLab, lwd=10, cex.axis=4.2, padj=1.2, tck=-.05)
+yLab=seq(0,ceiling(max(tReat[,-1])/1000)*1000, by=3000)
+axis(2, at=yLab, labels=yLab, lwd=10, cex.axis=4.2, padj=-.7)
+mtext("Year", side = 1, cex = 4.2, padj=3)
+mtext("Samples", side = 2, cex = 4.2, padj=-2.5)
+abline(h=0, col="#000000ff", lwd=5)
 plot.new()
-lPt = legPlot(colnames(tReat)[-1], 2)
-legend("top", legend=sub("_"," ",capFirst(colnames(tReat)[-1]))[lPt[[1]]], border=NA, ncol=lPt[[2]], lty=c(rep(1,length(1:(ncol(tReat)-1))),NA), title="Annual Review Medication Records", col=cBp[1:(ncol(tReat)-1)], lwd=5, cex=2.1, pch=c(1:(ncol(tReat)-1),NA))
+lPt = legPlot(colnames(tReat)[-1], ncol(tReat)-1)
+legend("top", legend=sub("_"," ",capFirst(colnames(tReat)[-1]))[lPt[[1]]], border=NA, ncol=lPt[[2]], lty=c(rep(1,length(1:(ncol(tReat)-1))),NA), title="Annual Review Medication Records", col=cBp[1:(ncol(tReat)-1)], lwd=5, cex=3.5, pch=c(1:(ncol(tReat)-1),NA)+20)
 invisible(dev.off())
 
 ##### files #####
