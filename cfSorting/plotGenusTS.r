@@ -8,6 +8,7 @@
 # date: 20220502
 
 ##### env #####
+argv = (commandArgs(T))
 pT = "../../00_biLVC/"
 source(paste0(pT,"pipeline/src.r"))
 library(deSolve)

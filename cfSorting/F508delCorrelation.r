@@ -79,14 +79,18 @@ glmm0 = glmm0[!is.na(glmm0[,1]),]
 yr2 = lm(glmm0[,1]~glmm0[,4]+glmm0[,5]+glmm0[,6]+glmm0[,7])
 yr2.1 = lm(glmm0[,1]~glmm0[,6])
 
-glmm0 = data.frame("gLV_fit" = c(yCor[,13],yCor[,14],yCor[,15],yCor[,16],yCor[,17],yCor[,18],yCor[,19],yCor[,20]), "year" = samSize$year, "group" = rep(f1,each=nrow(yCor)))
-for(i in 3:ncol(tReat)){
-	glmm0[,ncol(glmm0)+1] = c(0,tReat[-1,i]/tReat$total[-1]-tReat[1:(nrow(tReat)-1),i]/tReat$total[1:(nrow(tReat)-1)])
-	colnames(glmm0)[ncol(glmm0)] = paste0(colnames(tReat)[i],"_rDiff")
-};rm(i)
-glmm0 = glmm0[!is.na(glmm0[,1]),]
-yr1 = lm(glmm0[,1]~glmm0[,4]+glmm0[,5]+glmm0[,6]+glmm0[,7])
+#glmm1 = data.frame("gLV_fit" = c(yCor[,13],yCor[,14],yCor[,15],yCor[,16],yCor[,17],yCor[,18],yCor[,19],yCor[,20]), "year" = samSize$year, "group" = rep(f1,each=nrow(yCor)))
+#for(i in 3:ncol(tReat)){
+#	glmm1[,ncol(glmm1)+1] = c(0,tReat[-1,i]/tReat$total[-1]-tReat[1:(nrow(tReat)-1),i]/tReat$total[1:(nrow(tReat)-1)])
+#	colnames(glmm1)[ncol(glmm1)] = paste0(colnames(tReat)[i],"_rDiff")
+#};rm(i)
+#glmm1 = glmm1[!is.na(glmm1[,1]),]
+#yr1 = lm(glmm1[,1]~glmm1[,4]+glmm1[,5]+glmm1[,6]+glmm1[,7])
 
 ##### correlation test #####
-cor.test(glmm0[,5],glmm0[,1], method="spearman") # non-sig; gLV proportion vs antimicrobials
-cor.test(glmm0[,4],glmm0[,1], method="spearman") # non-sig; gLV proportion vs CFTRm
+c1 = cor.test(glmm0[,4],glmm0[,1], method="spearman") # non-sig; gLV proportion vs CFTRm
+c2 = cor.test(glmm0[,5],glmm0[,1], method="spearman") # non-sig; gLV proportion vs antimicrobials
+c3 = cor.test(glmm0[,6],glmm0[,1], method="spearman") # alm-sig; gLV proportion vs chemicals
+c4 = cor.test(glmm0[,7],glmm0[,1], method="spearman") # non-sig; gLV proportion vs interactions
+
+cAll = data.frame(fac=colnames(tReat)[-c(1:2)],rho=c(c1$estimate, c2$estimate, c3$estimate, c4$estimate), S=c(c1$statistic, c2$statistic, c3$statistic, c4$statistic), adj.p=c(c1$p.value, c2$p.value, c3$p.value, c4$p.value)*4)

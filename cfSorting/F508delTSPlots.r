@@ -102,18 +102,20 @@ for(i in 1:length(f0)){z = 0; cat(i,"(",date(),"),\n")
 		ecoPlot = ecoTS[[i0]][,-1]
 		ecoPlot[nrow(ecoPlot)+c(1:2),] = 0
 		ecoPlot = as.matrix(t(ecoPlot[c(nrow(ecoPlot)-1:0,1:(nrow(ecoPlot)-2)),]))
-		colnames(ecoPlot) = paste0(yR,"\n(",samSize[,which(colnames(samSize)==paste0("g",f0[i]))],")\n(",tReat[,2],")")
+		colnames(ecoPlot) = paste0(yR,"\n(",samSize[,which(colnames(samSize)==paste0("g",f0[i]))],")\n[",tReat[,2],"]")
 
 ### export
 		pdf(paste0(ptOT,f0[i],"_",sPair[i0],".pdf"), width=14, height=11)
 		par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.4, xpd=T)
 		barplot(ecoPlot, ylim=c(0,100), xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
 		axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
-		mtext("Year (Group Sample Size) (Total Sample Size)",side=1,padj=4.9,cex=2.1)
+		mtext("Year (Group Sample Size) [Total Sample Size]",side=1,padj=4.9,cex=2.1)
 ### legend plot
 		plot.new()
-		lPt = legPlot(eCo)
-		legend("top", inset=c(0,0), legend = capFirst(gsub("_"," ",sub("c2","B",eCo[lPt[[1]]]))), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=lPt[[2]], pch = rep(19,length(eCo)), col = cBp)
+		x9 = rep("",length(eCo))
+		x9[grep("c2",eCo)] = paste0(strsplit(sPair[i0], "_")[[1]][1],": ")
+		lPt = legPlot(eCo, nDim=length(eCo))
+		legend("top", inset=c(0,0), legend = paste0(x9,capFirst(gsub("_"," ",sub("c2",strsplit(sPair[i0], "_")[[1]][2],eCo[lPt[[1]]])))), title=paste("Ecological Relationship - 100% =",nRep*simO,"simulations"), border=NA, xpd=T, cex=2, ncol=lPt[[2]], pch = rep(19,length(eCo)), col = cBp)
 		invisible(dev.off())
 	};rm(i0)
 };rm(i);cat("Done",date(),"\n")
