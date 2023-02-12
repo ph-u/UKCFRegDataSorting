@@ -7,20 +7,24 @@
 # arg: 0 [for i in `ls ../F508del_data/*-eco* | cut -f 3 -d "_" | uniq`;do Rscript tsAll.r ${i};done]
 # date: 20230113
 
+# for i in `ls ../p_raw_20230207/data/*-eco* | cut -f 4 -d "_" | uniq`;do Rscript tsAll.r ${i};done
 ##### env #####
 argv = (commandArgs(T))
 source("../../00_biLVC/src/src.r")
 library(deSolve)
 nRep = 7; simO = 500
-ptIN = "../F508del_data/"
-ptOT = "../graph/"
-acRatio = .25 # acceptance ratio in plotting
+ptIN = "../p_raw_20230207/data/" #"../F508del_data/"
+ptOT = "../p_raw_20230207/res/" #"../graph/"
+#acRatio = .25 # acceptance ratio in plotting
 cBp = palette.colors(palette = "Okabe-Ito", alpha=1, recycle = T)
 cBl = palette.colors(palette = "Okabe-Ito", alpha=.01, recycle = T)
-rEf = data.frame(code=c("0000","0010","0100","0110","1010","1011","1110","1111"), group=c("No medications", "Drugs/supplements", "Antimicrobials", "Antimicrobials + Drugs/supplements", "CFTR modulators + Drugs/supplements", "CFTR modulators + Drugs/supplements + Drug-drug interaction", "CFTR modulators + Antimicrobials + Drugs/supplements", "CFTR modulators + Antimicrobials + Drugs/supplements + Drug-drug interaction"))
+#rEf = data.frame(code=c("0000","0010","0100","0110","1010","1011","1110","1111"), group=c("No medications", "Drugs/supplements", "Antimicrobials", "Antimicrobials + Drugs/supplements", "CFTR modulators + Drugs/supplements", "CFTR modulators + Drugs/supplements + Drug-drug interaction", "CFTR modulators + Antimicrobials + Drugs/supplements", "CFTR modulators + Antimicrobials + Drugs/supplements + Drug-drug interaction"))
+m0 = read.csv(paste0(ptIN,"../medDist.csv"), header=T)
+m1 = read.csv(paste0(ptIN,"../F508dd_samFreq.csv"), header=T)
+x = c(colnames(m0)[grep("CFTR",colnames(m0))],colnames(m0)[grep("antim",colnames(m0))],colnames(m0)[grep("panc",colnames(m0))],"others")
 
 ##### f: capitalise first letter #####
-capFirst = function(x){return(paste0(toupper(substr(x,1,1)),substr(x,2,nchar(x))))}
+capFirst = function(x){return(gsub("[.]"," ",paste0(toupper(substr(x,1,1)),substr(x,2,nchar(x)))))}
 
 ##### f: plot legend #####
 legPlot = function(x,nDim=3){
@@ -32,16 +36,16 @@ legPlot = function(x,nDim=3){
 }
 
 ##### treatment distribution along time #####
-cat("Sample size [",argv[1],"] calculation: ",date(),"\n")
-samSize = read.csv("../graph/cftrm_samFreq.csv", header=T)
-x = c("Year","total","CFTR_modulators","antimicrobials","drugs/supplements","drug_interaction")
-tReat = as.data.frame(matrix(nr=nrow(samSize), nc=length(x)))
-colnames(tReat) = x;rm(x)
-tReat$Year = samSize$year
-tReat$total = apply(samSize[,-1],1,sum)
-for(i in 3:ncol(tReat)){
-        tReat[,i] = apply(samSize[,which(substr(colnames(samSize),i-1,i-1)==1)],1,sum)
-};rm(i)
+#cat("Sample size [",argv[1],"] calculation: ",date(),"\n")
+#samSize = read.csv("../graph/cftrm_samFreq.csv", header=T)
+#x = c("Year","total","CFTR_modulators","antimicrobials","drugs/supplements","drug_interaction")
+#tReat = as.data.frame(matrix(nr=nrow(samSize), nc=length(x)))
+#colnames(tReat) = x;rm(x)
+#tReat$Year = samSize$year
+#tReat$total = apply(samSize[,-1],1,sum)
+#for(i in 3:ncol(tReat)){
+#        tReat[,i] = apply(samSize[,which(substr(colnames(samSize),i-1,i-1)==1)],1,sum)
+#};rm(i)
 
 ##### time-series data #####
 cat("Time-series data [",argv[1],"]: ",date(),"\n")
@@ -52,13 +56,16 @@ for(i in 1:length(f)){
 };rm(i)
 
 ## plot
-pdf(paste0(ptOT,"cf425_",argv[1],"_overall.pdf"), width=14, height=14)
+nAm = rep(NA,4); for(i in 1:length(nAm)){nAm[i] = capFirst(ifelse(substr(argv[1],i,i)==0,"",x[i]))};rm(i)
+pdf(paste0(ptOT,"F508dd_",argv[1],"_overall.pdf"), width=14, height=14)
 #pdf(paste0(ptOT,"cf425_overall.pdf"), width=14, height=14)
 par(mar=c(5,5,1,0)+.1, mfrow = c(2,1), cex.axis=1.4, xpd=F)
 matplot(f0[,1], f0[,-1], "p", pch=4+1:(ncol(f0)-1), xaxt="n", xlab="", ylab="Prevalence (%)", cex=5, col=cBp, cex.axis=2.1, cex.lab=2.1, ylim = c(0,100), xlim = c(2008,2020))
 abline(h=0, col="#000000ff")
-axis(1, at=seq(2008,2020), padj=.7, labels=paste0(seq(2008,2020),"\n(",samSize[,which(colnames(samSize)==paste0("g",argv[1]))],")\n[",tReat[,2],"]"))
-mtext(paste0("Year (Group Sample Size) [Total Sample Size]\n",rEf$group[which(rEf$code==argv[1])]),side=1,padj=2.8,cex=2.1)
+#axis(1, at=seq(2008,2020), padj=.7, labels=paste0(seq(2008,2020),"\n(",samSize[,which(colnames(samSize)==paste0("g",argv[1]))],")\n[",tReat[,2],"]"))
+axis(1, at=seq(2008,2020), padj=.7, labels=paste0(seq(2008,2020),"\n(",m1[,paste0("g",argv[1])],")\n[",m0[,2],"]"))
+#mtext(paste0("Year (Group Sample Size) [Total Sample Size]\n",rEf$group[which(rEf$code==argv[1])]),side=1,padj=2.8,cex=2.1)
+mtext(paste0("Year (Group Sample Size) [Total Sample Size]\n",paste(nAm[nAm!=""], collapse=" + ")),side=1,padj=2.8,cex=2.1)
 text(2007.75, 93, labels="n =", cex=2)
 
 ##### Simulation Time-series #####
