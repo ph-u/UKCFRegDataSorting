@@ -86,7 +86,7 @@ for(i in 1:nrow(rEf0)){sP0[which(sP0[,2]==rEf0[i,1]),2] = rEf0[i,2]};rm(i)
 p = prcomp(sP0[,-c(1:2)], scale.=T)
 pCa0 = ggbiplot(p, var.scale = 1,
 	groups=sP0[,2], ellipse = TRUE, ellipse.prob = .95,
-	labels = row.names(sP0), labels.size = 4,
+	labels.size = 4, #labels = row.names(sP0),
 	varname.size = 4, varname.adjust = c(3,2.4,2,1.5,2.5,3.2,1.8) # mut,comm,,,ame,comp,unp
 )+#xlab("")+ylab("")+
 scale_color_manual(values=setNames(cBp[1:length(unique(sP0[,2]))], unique(sP0[,2])))+
@@ -113,7 +113,7 @@ p0 = plsda(sP0[,-c(1:2)], as.factor(sP0[,2]))
 #write.csv(sP0[c(252,232,52,8,452,163,150,184,376),1:2], paste0(ptOT, "plsda_outliers.csv"), quote=F, row.names=T)
 pdf(paste0(ptOT,"medPLSDA.pdf"), width=14, height=14)
 #jpeg(paste0(ptOT,"medPLSDA.jpg"), width=1000, height=1000)
-plotIndiv(p0, ellipse=T, ellipse.level=.95, col=cBp[1:nrow(rEf0)], size.xlabel=rel(1.4), size.ylabel=rel(4), size.axis=rel(2), legend=F, style="graphics", cex=3) # cBp[c(3,4,7,8,5,6,2,1)]
+plotIndiv(p0, pch=20, ellipse=T, ellipse.level=.95, col=cBp[1:nrow(rEf0)], size.xlabel=rel(1.4), size.ylabel=rel(4), size.axis=rel(2), legend=F, style="graphics", cex=3) # cBp[c(3,4,7,8,5,6,2,1)]
 #plotIndiv(p0, ellipse=T, ellipse.level=.95, col=cBp[1:nrow(rEf0)], X.label ="", Y.label ="", size.ylabel=rel(4), size.axis=rel(2), legend=F, style="graphics", cex=3) # cBp[c(3,4,7,8,5,6,2,1)]
 invisible(dev.off())
 

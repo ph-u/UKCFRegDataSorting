@@ -10,15 +10,13 @@
 #argv=(commandArgs(T))
 #argv = c("0111","Pseudomonas")
 ##### env #####
-nRep = 7
-simO = 500
-mTx = .3
+nRep = 7;simO = 500;mTx = .3
 ptIN = "../p_raw_20230207/data/" #"../F508del_data/"
 ptOT = "../p_raw_20230207/res/" #"../graph/F508del/"
 sEq = c(2,9,3,4,5,6,7,1,8)
 cBp = palette.colors(palette = "Okabe-Ito", alpha=1, recycle = T)[sEq]
-#cBl = palette.colors(palette = "Okabe-Ito", alpha=.1, recycle = T)[sEq]
-cBp = c(cBp,paste0(substr(cBp,1,nchar(cBp[1])-2),"aa"))
+cBl = palette.colors(palette = "Okabe-Ito", alpha=.1, recycle = T)[sEq]
+#cBp = c(cBp,paste0(substr(cBp,1,nchar(cBp[1])-2),"aa"))
 
 ##### f: capitalise first letter #####
 capFirst = function(x){return(paste0(toupper(substr(x,1,1)),substr(x,2,nchar(x))))}
@@ -78,19 +76,70 @@ for(i0 in 1:length(medGp)){ cat(medGp[i0],","); for(i1 in 1:length(spNam)){
 	a0$subject = spNam[i1]
 	if(i0==1 & i1==1){a0Spp = a0}else{a0Spp = rbind(a0Spp,a0)}
 
+##### Summarize timeline #####
+	if(i0==1 & i1==1){
+		sEco = as.data.frame(matrix(nr=length(medGp)*length(spNam), nc=nrow(eCo)+3))
+		colnames(sEco) = c("Med_Gp","Species",eCo$src,"unpredictable")
+		i2=1}
+		i3 = rowSums(ecoPlot)/(length(yR)-sum(colSums(ecoPlot)==0))
+		sEco[i2,] = c(medGp[i0],spNam[i1],i3,1-sum(i3))
+		i2 = i2+1
 ##### plot #####
-	colnames(ecoPlot) = paste0(colnames(ecoPlot),"\n(",read.csv(paste0(ptOT,"../F508dd_samFreq.csv"), header=T)[,paste0("g",medGp[i0])],")\n[",read.csv(paste0(ptOT,"medication.csv"), header=T)[,2],"]")
-	pdf(paste0(ptOT,"sp_",medGp[i0],"_",spNam[i1],".pdf"), width=14, height=11)
-	par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.4, xpd=T)
-	barplot(ecoPlot*100, ylim=c(0,100), xaxt="n", ylab=paste(spNam[i1], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
-	axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
-	mtext("Year (Group Sample Size) [Total Sample Size]",side=1,padj=4.9,cex=2.1)
+#	colnames(ecoPlot) = paste0(colnames(ecoPlot),"\n(",read.csv(paste0(ptOT,"../F508dd_samFreq.csv"), header=T)[,paste0("g",medGp[i0])],")\n[",read.csv(paste0(ptOT,"medication.csv"), header=T)[,2],"]")
+#	pdf(paste0(ptOT,"sp_",medGp[i0],"_",spNam[i1],".pdf"), width=14, height=11)
+#	par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.4, xpd=T)
+#	barplot(ecoPlot*100, ylim=c(0,100), xaxt="n", ylab=paste(spNam[i1], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
+#	axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
+#	mtext("Year (Group Sample Size) [Total Sample Size]",side=1,padj=4.9,cex=2.1)
 
-	plot.new()
-	lPt = legPlot(eCo$src, nDim=length(eCo$src))
-	legend("top", inset=c(0,0), legend = capFirst(sub(" of","",sub(" c2","",gsub("_", " ", eCo$src)))), title=paste("Ecological Relationship - 100% =",totSimu,"simulations"), border=NA, xpd=T, cex=2, ncol=lPt[[2]], pch = rep(19,length(eCo)), col = cBp)
-	invisible(dev.off())
+#	plot.new()
+#	lPt = legPlot(eCo$src, nDim=length(eCo$src))
+#	legend("top", inset=c(0,0), legend = capFirst(sub(" of","",sub(" c2","",gsub("_", " ", eCo$src)))), title=paste("Ecological Relationship - 100% =",totSimu,"simulations"), border=NA, xpd=T, cex=2, ncol=lPt[[2]], pch = rep(19,length(eCo)), col = cBp)
+#	invisible(dev.off())
 }};cat("\n")
+
+##### radar summary plot #####
+cat("Radar:",date(),"\n")
+library(fmsb)
+for(i in 3:ncol(sEco)){sEco[,i] = as.numeric(sEco[,i])};rm(i)
+colnames(sEco)[-c(1:2,ncol(sEco))] = sub(" of","",sub(" c2","",gsub("_", " ", eCo$src)))
+colnames(sEco)[3:ncol(sEco)] = capFirst(colnames(sEco)[3:ncol(sEco)])
+s1 = spNam[c(2:4,10,5:7,9,8,1)]
+
+## overall pattern
+sOver = as.data.frame(matrix(0,nr=length(medGp)+2, nc=ncol(sEco)-2))
+colnames(sOver) = colnames(sEco)[-c(1,2)]
+row.names(sOver)[1:2] = c("max","min");sOver[1,] = max(sEco[,-c(1:2)])
+for(i in 1:length(medGp)){
+	s0 = sEco[which(sEco$Med_Gp==medGp[i]),-c(1,2)]
+	row.names(sOver)[i+2] = medGp[i]
+	sOver[i+2,] = colSums(s0)/length(s1)
+};rm(i,s0)
+
+lgele = c("CFTR modulators","antimicrobials","pancrelipase","others (med)")
+lG0 = c();lG1 = strsplit(medGp,"");for(i in 1:length(medGp)){
+	lG0[i] = paste(capFirst(lgele[which(lG1[[i]]==1)]),collapse=" + ")
+};rm(i,lG1)
+
+pdf(paste0(ptOT,"radar_legend.pdf"), width=14, height=14)
+plot.new()
+lPt = legPlot(lG0, nDim=length(lG0))
+legend("top", inset=c(0,0), legend = capFirst(lG0), title=paste("Medication Group - 100% =",totSimu,"simulations"), border=NA, xpd=T, cex=2, ncol=lPt[[2]], pch = rep(19,length(lG0)), col = cBp)
+invisible(dev.off())
+	
+for(i9 in 1:length(medGp)){
+	pdf(paste0(ptOT,"radar_",medGp[i9],".pdf"), width=14, height=14)
+	par(mar=c(1,1,1,1)+.1, mfrow=c(4,3), cex=1.1, xpd=T)
+
+	for(i in 1:length(s1)){
+		s0 = sEco[which(sEco$Med_Gp==medGp[i9] & sEco$Species==s1[i]),-c(1:2)]
+		radarchart(rbind(rep(max(s0),ncol(s0)),rep(0,ncol(s0)),s0), pcol=cBp[i9], pfcol=cBl[i9], plty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(max(s0)*100),round(max(s0)*100)/4),"%"), title=capFirst(s1[i]))
+	};rm(i,s0)
+
+	radarchart(sOver[c(1,2,i9+2),], pcol=cBp[i9], pfcol=cBl[i9], plty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(sOver[1,1]*100),round(sOver[1,1]*100)/4),"%"), title=lG0[i9])
+	invisible(dev.off())
+};rm(i9)
+write.csv(sEco,paste0(ptOT,"radar_data.csv"), quote=F, row.names=F)
 
 ##### PCA: ecology vector, taxa colour #####
 cat("PCA (ecology vector, taxa colour):",date(),"\n")
@@ -110,7 +159,7 @@ row.names(p0) = 1:nrow(p0)
 p = prcomp(p0[,-c(1:2)], scale.=T)
 pCa0 = ggbiplot(p, var.scale = 1,
         groups=p0[,2], ellipse = F,#TRUE, ellipse.prob = .95,
-        labels = 1:nrow(p0), labels.size = 4,
+        labels.size = 4, #labels = 1:nrow(p0),
         varname.size = 2.8, varname.adjust = c(4.1,2,3.9,1.5,2.5,2,1.8) # mut,comm,pred,neut,ame,comp,unp
 )+#xlab("")+ylab("")+
 scale_color_manual(values=setNames(cBp[c(5,1:3,6:10,4)], unique(p0[,2])))+
@@ -129,7 +178,7 @@ cat("PLS-DA (ecology vector, taxa colour):",date(),"\n")
 library(mixOmics)
 p1 = plsda(p0[,-c(1:2)], as.factor(p0[,2]))
 pdf(paste0(ptOT,"sp_PLSDA.pdf"), width=14, height=14)
-plotIndiv(p1, ellipse=T, ellipse.level=.95, col=cBp[1:length(spNam)], size.xlabel=rel(1.4), size.ylabel=rel(4), size.axis=rel(2), legend=T, style="graphics", cex=3) # cBp[c(3,4,7,8,5,6,2,1)]
+plotIndiv(p1, pch=20, ellipse=T, ellipse.level=.95, col=cBp[1:length(spNam)], size.xlabel=rel(1.4), size.ylabel=rel(4), size.axis=rel(2), legend=T, style="graphics", cex=3) # cBp[c(3,4,7,8,5,6,2,1)]
 invisible(dev.off())
 
 ##### PCA: medication vector, taxa colour (illogical, `.` both independent var) #####
