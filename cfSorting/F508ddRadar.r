@@ -29,7 +29,7 @@ legPlot = function(x,nDim=3){
 
 ##### med group names #####
 medGp = unique(sEco[,1])
-spNam = unique(sEco[,2])
+spNam = unique(sEco[,2])[c(2:4,10,5:7,9,8,1)]
 totSimu = nRep*simO*length(spNam)
 lgele = c("CFTR modulators","antimicrobials","pancrelipase","others (med)")
 lG0 = c();lG1 = strsplit(medGp,"");for(i in 1:length(medGp)){
@@ -79,7 +79,7 @@ invisible(dev.off())
 pdf(paste0(ptOT,"radar_comp.pdf"), width=14, height=10)
 par(mar=c(1,1,1,1)+.1, mfrow=c(1,2), cex=1.8, xpd=T)
 
-s1 = list("Fungi"=c(2,3,9),"Gram_Negatives"=c(4,5,7))
+s1 = list("Fungi"=c(1,2,8),"Gram_Negatives"=c(3,5,7))
 for(i in 1:length(s1)){
 	sOver = sEco[which(sEco$Med_Gp=="0111" & sEco$Species %in% spNam[s1[[i]]]),]
 	row.names(sOver) = sOver$Species; sOver = sOver[,-c(1:2)]
