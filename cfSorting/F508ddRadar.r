@@ -51,7 +51,7 @@ par(mar=c(1,1,1,1)+.1, mfrow=c(4,2), cex=2.3, xpd=T)
 for(i in 1:length(medGp)){
 	s0 = sEco[which(sEco$Med_Gp==medGp[i]),-c(1:2)]
 	sOver[i+2,] = colSums(s0)/nrow(s0)
-	radarchart(sOver[c(1,2,i+2),], pcol=cBp[i], pfcol=cBl[i], plty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(sOver[1,1]*100),round(sOver[1,1]*100)/4),"%"), title=lG0[i])
+	radarchart(sOver[c(1,2,i+2),], pcol=cBp[i], pfcol=cBl[i], plty=1, cglcol = "#000000ff", cglwd=1.4, cglty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(sOver[1,1]*100),round(sOver[1,1]*100)/4),"%"), title=lG0[i])
 };rm(i)
 invisible(dev.off())
 
@@ -71,7 +71,7 @@ par(mar=c(1,1,1,1)+.1, mfrow=c(5,2), cex=1.8, xpd=T)
 for(i in 1:length(spNam)){
         s0 = sEco[which(sEco$Med_Gp=="0111" & sEco$Species==spNam[i]),-c(1:2)]
         sOver[i+2,] = colSums(s0)/nrow(s0)
-        radarchart(sOver[c(1,2,i+2),], pcol=cBp[i], pfcol=cBl[i], plty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(sOver[1,1]*100),round(sOver[1,1]*100)/4),"%"), title=spNam[i])
+        radarchart(sOver[c(1,2,i+2),], pcol=cBp[i], pfcol=cBl[i], plty=1, cglcol = "#000000ff", cglwd=1.4, cglty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(sOver[1,1]*100),round(sOver[1,1]*100)/4),"%"), title=spNam[i])
 };rm(i)
 invisible(dev.off())
 
@@ -83,7 +83,7 @@ s1 = list("Fungi"=c(1,2,8),"Gram_Negatives"=c(3,5,7))
 for(i in 1:length(s1)){
 	sOver = sEco[which(sEco$Med_Gp=="0111" & sEco$Species %in% spNam[s1[[i]]]),]
 	row.names(sOver) = sOver$Species; sOver = sOver[,-c(1:2)]
-	radarchart(rbind(rep(max(sOver),ncol(sOver)),rep(0,ncol(sOver)),sOver), pcol=cBp[s1[[i]]], pfcol=cBl[s1[[i]]], plty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(sOver[1,1]*100),round(sOver[1,1]*100)/4),"%"), title=gsub("_"," ",names(s1)[i]))
+	radarchart(rbind(rep(max(sOver),ncol(sOver)),rep(0,ncol(sOver)),sOver), pcol=cBp[s1[[i]]], pfcol=cBl[s1[[i]]], plty=1, cglcol = "#000000ff", cglwd=1.4, cglty=1, axislabcol="grey", vlcex=.8, axistype=1, maxmin=T, caxislabels=paste0(seq(0,round(max(sOver)*100),round(max(sOver)*100)/4),"%"), title=gsub("_"," ",names(s1)[i]))
 	legend("topright", inset=c(0,0), legend=spNam[s1[[i]]], border=NA, xpd=T, cex=1, pch=rep(19,nrow(sOver)), col=cBp[s1[[i]]])
 };rm(i)
 
