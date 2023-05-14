@@ -16,6 +16,7 @@ ptOT = "../p_raw_20230207/res/" #"../graph/F508del/"
 sEq = c(2,9,3,4,5,6,7,1,8)
 cBp = palette.colors(palette = "Okabe-Ito", alpha=1, recycle = T)[sEq]
 cBl = palette.colors(palette = "Okabe-Ito", alpha=.7, recycle = T)[sEq]
+pType = "bar" # "bar" == barplots, else curved area plots
 
 ##### f: capitalise first letter #####
 capFirst = function(x){return(paste0(toupper(substr(x,1,1)),substr(x,2,nchar(x))))}
@@ -103,10 +104,13 @@ for(i in 1:length(f0)){z = 0; cat(i,"(",date(),"),\n")
 ### stacked barplot prep
 		ecoPlot = ecoTS[[i0]][,-1]
 		ecoPlot[nrow(ecoPlot)+c(1:2),] = 0
-		#ecoPlot = as.matrix(t(ecoPlot[c(nrow(ecoPlot)-1:0,1:(nrow(ecoPlot)-2)),]))
-		#colnames(ecoPlot) = paste0(yR,"\n(",samSize[,which(colnames(samSize)==paste0("g",f0[i]))],")\n[",tReat[,2],"]")
-		ecoPlot = ecoPlot[c(nrow(ecoPlot)-1:0,1:(nrow(ecoPlot)-2)),]
-		row.names(ecoPlot) = yR
+		if(pType=="bar"){
+			ecoPlot = as.matrix(t(ecoPlot[c(nrow(ecoPlot)-1:0,1:(nrow(ecoPlot)-2)),]))
+			colnames(ecoPlot) = paste0(yR,"\n(",samSize[,which(colnames(samSize)==paste0("g",f0[i]))],")\n[",tReat[,2],"]")
+		}else{
+			ecoPlot = ecoPlot[c(nrow(ecoPlot)-1:0,1:(nrow(ecoPlot)-2)),]
+			row.names(ecoPlot) = yR
+		}
 		ePlot0 = ecoPlot
 		for(i1 in 2:ncol(ePlot0)){ePlot0[,i1] = ePlot0[,i1-1]+ePlot0[,i1]};rm(i1)
 		xLab0 = paste0(yR,"\n(",samSize[,which(colnames(samSize)==paste0("g",f0[i]))],")\n[",tReat[,2],"]")
@@ -119,19 +123,28 @@ for(i in 1:length(f0)){z = 0; cat(i,"(",date(),"),\n")
 #		invisible(dev.off())
 		pdf(paste0(ptOT,f0[i],"_",sPair[i0],".pdf"), width=14, height=11)
 		par(mar=c(5,4.5,2,1)+.1, mfrow=c(2,1), cex.axis=1.4, xpd=F)
-		#barplot(ecoPlot, ylim=c(0,100), xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
-		matplot(row.names(ePlot0),ePlot0, pch=1:ncol(ePlot0), cex=.4, xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", cex.axis=2, cex.lab=1.5, col=cBp) #"transparent")
+		if(pType=="bar"){
+			barplot(ecoPlot, ylim=c(0,100), xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", col=cBp, border="white", cex.axis=2.1, cex.lab=1.5)
+		}else{
+			matplot(row.names(ePlot0),ePlot0, pch=1:ncol(ePlot0), cex=.4, xaxt="n", ylab=paste(sPair[i0], "(%)"), xlab="", cex.axis=2, cex.lab=1.5, col=cBp) #"transparent")
+		}
 		for(i1 in 1:ncol(ePlot0)){
-			#pY = ePlot0[,i1]/100
-			pY = predict(loess(ePlot0[-c(1:2),i1]/100~yR[-c(1:2)]))
-			if(i1==1){pY0 = rep(0,length(yR)-2)}
-			pY = ifelse(pY<pY0,pY0,pY)
-			pY = ifelse(pY<0,0,pY)
-			polygon(c(yR[-c(1:2)],rev(yR[-c(1:2)])),c(pY,rev(pY0))*100, col=cBl[i1], border="#00000000")
-			pY0 = pY
+			if(pType=="bar"){
+				pY = ePlot0[,i1]/100
+			}else{
+				pY = predict(loess(ePlot0[-c(1:2),i1]/100~yR[-c(1:2)]))
+				if(i1==1){pY0 = rep(0,length(yR)-2)}
+				pY = ifelse(pY<pY0,pY0,pY)
+				pY = ifelse(pY<0,0,pY)
+				polygon(c(yR[-c(1:2)],rev(yR[-c(1:2)])),c(pY,rev(pY0))*100, col=cBl[i1], border="#00000000")
+				pY0 = pY
+			}
 		};rm(i1)
-		axis(1, at=yR, padj=.7, labels=xLab0)
-		#axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
+		if(pType=="bar"){
+			axis(1, at=-.5+1.2*(1:length(yR)), padj=.7, labels=colnames(ecoPlot))
+		}else{
+			axis(1, at=yR, padj=.7, labels=xLab0)
+		}
 		mtext("Year (Group Sample Size) [Total Sample Size]",side=1,padj=4.9,cex=2.1)
 ### legend plot
 		plot.new()
