@@ -1,5 +1,7 @@
 # UK Cystic Fibrosis Registry data (ref \#: 425) handling script sequence
 
+[![DOI](https://zenodo.org/badge/463085286.svg)](https://zenodo.org/badge/latestdoi/463085286)
+
 - Raw data files (xlsx, doc, docx, pdf) in CF Registry data directory
 - I/O data files (rda, csv) in `data` directory
 - Figures (pdf) in thesis figure directory
